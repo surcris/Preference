@@ -1,0 +1,11 @@
+:root {
+  font-family: 'Kodchasan';
+
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(31, 31, 31);
+  min-height: 100vh;
+}
