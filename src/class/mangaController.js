@@ -77,7 +77,7 @@ export default class MangaController{
     async addTask(objetMange){
         try {
            
-            await db.set(tdb.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+            await db.set(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
                 task: objetMange.task,
                 complete: objetMange.complete,
                 // dateCreation: objetMange.dateCreation,

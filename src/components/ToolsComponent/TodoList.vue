@@ -48,15 +48,16 @@ export default{
     methods:{
         addTask(){
             if (this.$refs.taskInput.value != "") {
+                
                 const newTask = {
                     task: this.$refs.taskInput.value,
                     complete: false
                 };
-                
-                this.listTask.push(newTask);
+                //console.log(this.listTask)
+                //this.listTask.push(newTask);
                 this.mangaC.addTask(newTask)
                 this.$refs.taskInput.value = "";
-                this.getAllTask()
+                
             }
             
         },
@@ -80,20 +81,26 @@ export default{
 			}
 		},
         async getAllTask() {
-			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
-			try {
-                this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
-				//await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
-					const data = snapshot.val();
-					this.listTask = data;
-                    console.log(this.listTask)
-				});
-				
+            //const dbRef = db.ref(db.getDatabase(),`Manga/`);
+            try {
+                this.unsubscribe = this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
+                    //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data == null) {
+                        console.log("Il n'y a pas de task")
+                    }else{
+                        this.listTask = data;
+                        //console.log(this.listTask);
+                    }
+                    
+                    
+                });
 
-			} catch (error) {
-				console.error(error);
-			}
-		},
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
     },
     mounted(){
 		this.getAllTask();
