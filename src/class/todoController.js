@@ -15,7 +15,7 @@ export default class TodoController{
     async addTask(objetMange){
         try {
            
-            await db.set(this.getDBrefName(objetMange.task), {
+            await db.set(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
                 task: objetMange.task,
                 complete: objetMange.complete,
                 // dateCreation: objetMange.dateCreation,
@@ -29,9 +29,16 @@ export default class TodoController{
             console.error('Erreur lors de l\'ajout de la task', error);
         }
     }
-    suppTask(titre){
-        const dbRef = db.ref(db.getDatabase());
-        return db.remove(db.child(dbRef, `ToDo/`+titre))
+    async suppTask(titre){
+        try {
+            const dbRef = db.ref(db.getDatabase());
+            //const taskRef = db.ref(`ToDo/${titre}`);
+            await db.remove(db.child(dbRef, `ToDo/${titre}`))
+            //await taskRef.remove();
+            console.log('Tâche supprimée :', titre);
+        } catch (error) {
+            console.error('Erreur lors de la suppression de la tâche :', error);
+        }
     }
     // async suppTask(name){
     //     try {

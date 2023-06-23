@@ -50,7 +50,7 @@ export default{
                     complete: false
                 };
                 
-                this.listTask.push(newTask);
+                //this.listTask.push(newTask);
                 this.todoReqC.addTask(newTask)
                 this.$refs.taskInput.value = "";
                 this.getAllTask()
@@ -63,18 +63,18 @@ export default{
             //this.listTask.splice(index, 1)
             
         },
-        async suppTask(titre) {
-			//const dbRef = db.ref(db.getDatabase());
-			try {
-				await this.todoReqC.suppTask(titre)
-					.then(() => {
+        // async suppTask(titre) {
+		// 	//const dbRef = db.ref(db.getDatabase());
+		// 	try {
+		// 		await this.todoReqC.suppTask(titre)
+		// 			.then(() => {
 							
-							console.log("Contenu supprimer et mis a jour de l'affichage");
-						})
-			} catch (error) {
-				console.error(error);
-			}
-		},
+		// 					console.log("Contenu supprimer et mis a jour de l'affichage");
+		// 				})
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// },
         async getAllTask() {
 			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
 			try {
@@ -89,6 +89,9 @@ export default{
 				console.error(error);
 			}
 		},
+    },
+    mounted(){
+        this.getAllTask();
     }
 }
 </script>
