@@ -2,8 +2,13 @@
     <div class="page-todo">
         <div class="container-todo">
             <div class="container-top-todo">
-                <h1>To-Do List</h1>
-                <i class="fa-solid fa-list-check"></i>
+                <div class="container-titre">
+                    <h1>To-Do List</h1>
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div @click="myStore.etatmodeTodo()" class="container-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
             </div>
             <div  class="barre-Add-todo">
                 <input ref="taskInput" type="text" >
@@ -25,9 +30,11 @@
 <script>
 import TodoController from '../../class/todoController'
 import MangaController from '../../class/mangaController';
+import { useMyStore } from '../../stores/store';
 export default{
     data(){
         return{
+            myStore:useMyStore(),
             mangaC: new MangaController(),
             styleCompletTask: {
                     color: 'red',
@@ -148,10 +155,25 @@ export default{
     margin-left: 10px;
     height: 10%;
 }
-.container-top-todo i{
+.container-titre{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.container-titre i{
     font-size: 25px;
     margin-left: 10px;
     color: rgb(255, 0, 0);
+}
+.container-close {
+   position: absolute;
+   top: 0;
+   right: 5px;
+}
+.container-close i{
+    font-size: 25px;
+    margin-left: 10px;
+    color: rgb(107, 1, 1);
 }
 .container-list-task{
     height: 80%;
