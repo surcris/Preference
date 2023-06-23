@@ -24,9 +24,11 @@
 
 <script>
 import TodoController from '../../class/todoController'
+import MangaController from '../../class/mangaController';
 export default{
     data(){
         return{
+            mangaC: new MangaController(),
             styleCompletTask: {
                     color: 'red',
                     backgroundColor: 'white',
@@ -39,7 +41,8 @@ export default{
                 border:'none',
             },
             listTask:[],
-            todoReqC: new TodoController()
+            todoReqC: new TodoController(),
+            unsubscribe:null,
         }
     },
     methods:{
@@ -51,7 +54,7 @@ export default{
                 };
                 
                 this.listTask.push(newTask);
-                this.todoReqC.addTask(newTask)
+                this.mangaC.addTask(newTask)
                 this.$refs.taskInput.value = "";
                 this.getAllTask()
             }
@@ -64,12 +67,13 @@ export default{
             
         },
         async suppTask(titre) {
+            //this.mangaC.suppManga(titre);
 			//const dbRef = db.ref(db.getDatabase());
 			try {
-				await this.todoReqC.suppTask(titre)
+				await this.mangaC.suppTask(titre)
 					.then(() => {
 							
-							console.log("Contenu supprimer et mis a jour de l'affichage");
+							console.log("Task supprimer et mis a jour de l'affichage");
 						})
 			} catch (error) {
 				console.error(error);
@@ -78,18 +82,23 @@ export default{
         async getAllTask() {
 			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
 			try {
-				await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
+                this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
+				//await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
 					const data = snapshot.val();
 					this.listTask = data;
                     console.log(this.listTask)
-				})
+				});
 				
 
 			} catch (error) {
 				console.error(error);
 			}
 		},
-    }
+    },
+    mounted(){
+		this.getAllTask();
+		
+    },
 }
 </script>
 

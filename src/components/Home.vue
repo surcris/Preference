@@ -141,14 +141,15 @@ export default {
         }
     },
 	created(){
-		if (this.userC.maintainUser() == false) {
+		if (this.userC.maintainUser() == false && sessionStorage.getItem("akey") == null) {
 			this.$router.push("authentification");
-			//this.modalFav = this.mesFav.modeModalFav;
+			console.log('redirect')
 		}
 		
 	},
 	destroyed(){
 		this.unsubscribe();
+		console.log("Destruction")
 		//this.mangaC.off(this.mangaC.getRefManga())
 	}
 }

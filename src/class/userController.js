@@ -38,6 +38,8 @@ export default class UserController{
                         return false;
                     }
                 });
+            }else{
+                return false;
             }
         } catch (error) {
             console.error(error);

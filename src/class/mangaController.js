@@ -23,6 +23,7 @@ export default class MangaController{
         }
     
     }
+    
 
     async updateManga(objetMange){
         try {
@@ -60,11 +61,47 @@ export default class MangaController{
         const dbRef = db.ref(db.getDatabase());
         return db.remove(db.child(dbRef, `Manga/`+titre))
     }
+    suppTodo(titre){
+        const dbRef = db.ref(db.getDatabase());
+        return db.remove(db.child(dbRef, `Todo/`+titre))
+    }
     getDB(){
         const dbRef = db.ref(db.getDatabase());
         return db;
     }
     getRefManga(){
         return db.ref(db.getDatabase(),`Manga/`)
+    }
+
+    //!==============================================
+    async addTask(objetMange){
+        try {
+           
+            await db.set(tdb.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                task: objetMange.task,
+                complete: objetMange.complete,
+                // dateCreation: objetMange.dateCreation,
+                // dateComplete: objetMange.dateComplete,
+                
+
+            });
+
+            console.log('Task ajouté avec succès');
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout de la task', error);
+        }
+    }
+
+    suppTask(titre){
+        const dbRef = db.ref(db.getDatabase());
+        return db.remove(db.child(dbRef, `ToDo/`+titre))
+    }
+    getAllTask() {
+        const dbRef = db.ref(db.getDatabase());
+        return db.get(db.child(dbRef, `ToDo/`))
+            
+    }
+    getRefTask(){
+        return db.ref(db.getDatabase(),`ToDo/`)
     }
 }
