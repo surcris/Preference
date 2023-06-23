@@ -2,8 +2,13 @@
     <div class="page-todo">
         <div class="container-todo">
             <div class="container-top-todo">
-                <h1>To-Do List</h1>
-                <i class="fa-solid fa-list-check"></i>
+                <div class="container-titre">
+                    <h1>To-Do List</h1>
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div @click="myStore.etatmodeTodo()" class="container-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
             </div>
             <div  class="barre-Add-todo">
                 <input ref="taskInput" type="text" >
@@ -11,8 +16,8 @@
             </div>
             <div class="container-list-task">
                 <div v-for="(task,index) in listTask"  class="container-task">
-                    <div class="container-task-left">
-                        <div @click="task.complete = !task.complete" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
+                    <div @click="modifEtatTask(task)" class="container-task-left">
+                        <div  @click="task.complete = !task.complete" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
                         <p :style="task.complete ? { textDecoration: 'line-through' } : { textDecoration: 'none' }">{{ task.task }}</p>
                     </div>
                     <div @click="suppTask(index)" class="container-task-right"><i class="fa-solid fa-xmark"></i></div>
@@ -24,9 +29,13 @@
 
 <script>
 import TodoController from '../../class/todoController'
+import MangaController from '../../class/mangaController';
+import { useMyStore } from '../../stores/store';
 export default{
     data(){
         return{
+            myStore:useMyStore(),
+            mangaC: new MangaController(),
             styleCompletTask: {
                     color: 'red',
                     backgroundColor: 'white',
@@ -39,21 +48,23 @@ export default{
                 border:'none',
             },
             listTask:[],
-            todoReqC: new TodoController()
+            todoReqC: new TodoController(),
+            unsubscribe:null,
         }
     },
     methods:{
         addTask(){
             if (this.$refs.taskInput.value != "") {
+                
                 const newTask = {
                     task: this.$refs.taskInput.value,
                     complete: false
                 };
-                
+                //console.log(this.listTask)
                 //this.listTask.push(newTask);
-                this.todoReqC.addTask(newTask)
+                this.mangaC.addTask(newTask)
                 this.$refs.taskInput.value = "";
-                this.getAllTask()
+                
             }
             
         },
@@ -63,36 +74,48 @@ export default{
             //this.listTask.splice(index, 1)
             
         },
-        // async suppTask(titre) {
-		// 	//const dbRef = db.ref(db.getDatabase());
-		// 	try {
-		// 		await this.todoReqC.suppTask(titre)
-		// 			.then(() => {
-							
-		// 					console.log("Contenu supprimer et mis a jour de l'affichage");
-		// 				})
-		// 	} catch (error) {
-		// 		console.error(error);
-		// 	}
-		// },
-        async getAllTask() {
-			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
+        async suppTask(titre) {
+            //this.mangaC.suppManga(titre);
+			//const dbRef = db.ref(db.getDatabase());
 			try {
-				await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
-					const data = snapshot.val();
-					this.listTask = data;
-                    console.log(this.listTask)
-				})
-				
-
+				await this.mangaC.suppTask(titre)
+					.then(() => {
+							
+							console.log("Task supprimer et mis a jour de l'affichage");
+						})
 			} catch (error) {
 				console.error(error);
 			}
 		},
+        async getAllTask() {
+            //const dbRef = db.ref(db.getDatabase(),`Manga/`);
+            try {
+                this.unsubscribe = this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
+                    //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data == null) {
+                        console.log("Il n'y a pas de task")
+                    }else{
+                        this.listTask = data;
+                        //console.log(this.listTask);
+                    }
+                    
+                    
+                });
+
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        modifEtatTask(objTask){
+            this.mangaC.updateTask(objTask)
+        }
     },
     mounted(){
-        this.getAllTask();
-    }
+		this.getAllTask();
+		
+    },
 }
 </script>
 
@@ -132,10 +155,25 @@ export default{
     margin-left: 10px;
     height: 10%;
 }
-.container-top-todo i{
+.container-titre{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.container-titre i{
     font-size: 25px;
     margin-left: 10px;
     color: rgb(255, 0, 0);
+}
+.container-close {
+   position: absolute;
+   top: 0;
+   right: 5px;
+}
+.container-close i{
+    font-size: 25px;
+    margin-left: 10px;
+    color: rgb(107, 1, 1);
 }
 .container-list-task{
     height: 80%;
