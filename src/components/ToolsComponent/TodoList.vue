@@ -11,8 +11,8 @@
             </div>
             <div class="container-list-task">
                 <div v-for="(task,index) in listTask"  class="container-task">
-                    <div class="container-task-left">
-                        <div @click="task.complete = !task.complete" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
+                    <div @click="modifEtatTask(task)" class="container-task-left">
+                        <div  @click="task.complete = !task.complete" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
                         <p :style="task.complete ? { textDecoration: 'line-through' } : { textDecoration: 'none' }">{{ task.task }}</p>
                     </div>
                     <div @click="suppTask(index)" class="container-task-right"><i class="fa-solid fa-xmark"></i></div>
@@ -101,6 +101,9 @@ export default{
                 console.error(error);
             }
         },
+        modifEtatTask(objTask){
+            this.mangaC.updateTask(objTask)
+        }
     },
     mounted(){
 		this.getAllTask();

@@ -91,7 +91,20 @@ export default class MangaController{
             console.error('Erreur lors de l\'ajout de la task', error);
         }
     }
+    async updateTask(objetMange){
+        try {
+            
+            await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                task: objetMange.task,
+                complete: objetMange.complete,
 
+            });
+
+            console.log('Task update avec succès');
+        } catch (error) {
+            console.error('Erreur lors de l\'update du manga', error);
+        }
+    }
     suppTask(titre){
         const dbRef = db.ref(db.getDatabase());
         return db.remove(db.child(dbRef, `ToDo/`+titre))
