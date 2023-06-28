@@ -11,6 +11,7 @@ export const useMyStore = defineStore('myStore', {
     btnSearch:false,
     modeTodo:false,
     sousTask:false,
+    actionBdd:false,
   }),
   actions: {
     updateVariable(newValue) {
@@ -35,6 +36,10 @@ export const useMyStore = defineStore('myStore', {
     etatSousTask() {
       this.sousTask = !this.sousTask;
       console.log(this.sousTask)
+    },
+    etatactionBdd() {
+      this.actionBdd = !this.actionBdd;
+      console.log(this.actionBdd)
     },
   },
 });

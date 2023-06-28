@@ -29,7 +29,7 @@
 		
 	</div>
 	<Menu v-if="myStore.btnSearch" ></Menu>
-	<TodoList v-show="myStore.modeTodo"></TodoList>
+	<TodoList v-if="myStore.modeTodo"></TodoList>
 	<!--<SearchBarre  v-show="myStore.btnSearch" />-->
 	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
@@ -143,7 +143,8 @@ export default {
                 
                 
             }
-        }
+        },
+		
     },
 	created(){
 		// if (this.userC.maintainUser() == false || sessionStorage.getItem("akey") == null) {
@@ -151,10 +152,10 @@ export default {
 		// 	console.log('redirect')
 		// }
 		
-		if (sessionStorage.getItem("akey") == null || this.userC.getAuthUser().currentUser == null) {
-			this.$router.push("authentification");
-			console.log('redirect')
-		}
+		// if (sessionStorage.getItem("akey") == null && this.userC.getAuthUser().currentUser == null) {
+		// 	this.$router.push("authentification");
+		// 	console.log('redirect')
+		// }
 		
 	},
 	destroyed(){

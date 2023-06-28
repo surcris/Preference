@@ -3,7 +3,7 @@
         <div @click="myStore.etatmodeTodo()" class="btn-todo">
 			<i class="fa-solid fa-clipboard-list"></i>
 		</div>
-        <div @click="" class="btn-calc">
+        <div @click="myStore.etatactionBdd()" class="btn-calc">
 			<i class="fa-solid fa-calculator"></i>
 		</div>
     

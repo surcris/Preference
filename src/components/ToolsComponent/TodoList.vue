@@ -17,7 +17,9 @@
             <div class="container-list-task">
                 <div v-for="(task,index) in listTask"  class="container-task">
                     <div @click=""  class="container-task-left">
-                        <div  @click="modifEtatTask(index)" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
+                        <div class="task-icon"  @click="modifEtatTask(index)" >
+                            <i :style="task.complete ? styleIncompletTask : styleCompletTask"  class="fa-solid fa-check"></i>
+                        </div>
                         <p @click="sousTaskAndEtat(index)"  :style="task.complete ? { textDecoration: 'line-through' } : { textDecoration: 'none' }" >{{ task.task }}</p>
                     </div>
                     <div @click="suppTask(index)" class="container-task-right"><i class="fa-solid fa-xmark"></i></div>
@@ -42,13 +44,13 @@ export default{
                     color: 'white',
                     backgroundColor: 'white',
                     boxSizing: 'border-box',
-                    border:'1px solid red',
+                    
                 },
             styleIncompletTask: {
                 color: 'white',
                 boxSizing: 'border-box',
                 backgroundColor: 'red',
-                border:'none',
+                
             },
             listTask:[],
             //todoReqC: new TodoController(),
@@ -65,8 +67,11 @@ export default{
                     complete: false
                 };
                 //console.log(this.listTask)
-                this.listTask.push(newTask);
-                this.mangaC.addTask(newTask)
+                //this.listTask.push(newTask);
+                if (this.myStore.actionBdd) {
+                    this.mangaC.addTask(newTask);
+                }
+                
                 this.$refs.taskInput.value = "";
                 
             }
@@ -97,19 +102,23 @@ export default{
         },
         suppTask(index){
             //console.log(this.listTask[index].task)
-            //this.todoReqC.suppTask(this.listTask[index].task)
-            this.listTask.splice(index, 1)
-            
+            this.suppTaskBdd(this.listTask[index].task)
+            if (this.myStore.actionBdd == false) {
+                this.listTask.splice(index, 1)
+            }
         },
-        async suppTask(titre) {
+        async suppTaskBdd(titre) {
             //this.mangaC.suppManga(titre);
 			//const dbRef = db.ref(db.getDatabase());
+            
 			try {
-				await this.mangaC.suppTask(titre)
+                if (navigator.onLine == true && this.myStore.actionBdd) {
+                    await this.mangaC.suppTask(titre)
 					.then(() => {
 							
 							console.log("Task supprimer et mis a jour de l'affichage");
 						})
+                }
 			} catch (error) {
 				console.error(error);
 			}
@@ -117,7 +126,7 @@ export default{
         async getAllTask() {
             //const dbRef = db.ref(db.getDatabase(),`Manga/`);
             try {
-                if (navigator.onLine == true) {
+                if (navigator.onLine == true && this.myStore.actionBdd) {
                     const user = this.userC.getAuthUser().currentUser;
                     await this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
                         //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
@@ -148,15 +157,36 @@ export default{
     },
     mounted(){
         
-        
 		
 		
     },
+    watch:{
+        "myStore.actionBdd": {
+            immediate: true,
+            handler() {
+				if(this.myStore.modeModalFav == true){
+					this.getAllTask();
+                    console.log('couco')
+				}
+                
+                
+            }
+        },
+		
+    },
     created(){
+        
         if (navigator.onLine) {
-            this.getAllTask();
-        } 
+            if (sessionStorage.getItem("akey") == null && this.userC.getAuthUser().currentUser == null) {
+                this.$router.push("authentification");
+                console.log('redirect');
+            }else{
+                
+                this.getAllTask();
+            }
             
+        } 
+        
        
     }
 }
@@ -269,32 +299,44 @@ export default{
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    width: 95%;
+    height: 50px;
     margin: 0 10px;
     font-size: 18px;
     margin-top: 5px;
+
 }
 .container-task-left{
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
 }
 .container-task-left p{
     margin-left: 10px;
     margin-top: 0;
     margin-bottom: 0;
-    width: 90%;
+    width: 85%;
 }
-.container-task-left div{
+.container-task-left .task-icon{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 25px;
-    width: 25px;
-    border-radius: 50%;
-    background-color: rgb(253, 0, 0);
+    width: 15%;
+    height:100%;
+    
+    
+}
+.container-task-left div i{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height:30px;
     font-size: 15px;
-    color: aliceblue;
-    width: 10%;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 1px solid red;
 }
 
 </style>
