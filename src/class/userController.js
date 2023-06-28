@@ -1,23 +1,24 @@
-import {auth} from '../../firebase';
+import {auth,db} from '../../firebase';
 
 export default class UserController{
-    connectUser() {
-        auth.signInWithEmailAndPassword(auth.getAuth(), this.infoConnexion.email, this.infoConnexion.password)
-            .then((userCredential) => {
-                // Connexion réussie, récupérer l'utilisateur connecté
-                const user = userCredential.user;
-                console.log('Utilisateur connecté ');
-                const uidCrypt = crypt.encryptData(user.uid);
-                sessionStorage.setItem("akey", uidCrypt)
-                this.myStore.updateVariable(2);
 
-                this.$router.push('/accueil');
+    connectUser(email,password) {
+        return auth.signInWithEmailAndPassword(auth.getAuth(), email, password)
+            // .then((userCredential) => {
+            //     // Connexion réussie, récupérer l'utilisateur connecté
+            //     const user = userCredential.user;
+            //     console.log('Utilisateur connecté ');
+            //     const uidCrypt = crypt.encryptData(user.uid);
+            //     sessionStorage.setItem("akey", uidCrypt)
+            //     this.myStore.updateVariable(2);
 
-            })
-            .catch((error) => {
-                // Erreur lors de la connexion, gérer l'erreur
-                console.error('Erreur de connexion :', error);
-            });
+            //     this.$router.push('/accueil');
+
+            // })
+            // .catch((error) => {
+            //     // Erreur lors de la connexion, gérer l'erreur
+            //     console.error('Erreur de connexion :', error);
+            // });
     }
 
     maintainUser() {
@@ -27,8 +28,8 @@ export default class UserController{
                 auth.onAuthStateChanged(auth.getAuth(), (user) => {
                     if (user) {
                         // L'utilisateur est connecté
-                        //console.log('Utilisateur connecté :', user.uid);
-                        //console.log('Utilisateur connecté');
+                        console.log('Utilisateur connecté :', user.uid);
+                        console.log('Utilisateur connecté');
                         // Vous pouvez effectuer des actions supplémentaires ici, comme mettre à jour l'état de votre application
                         return true;
                     } else {
@@ -45,5 +46,11 @@ export default class UserController{
             console.error(error);
             return false;
         }
+    }
+    getAuthUser(){
+        return auth.getAuth();
+    }
+    getDB(){
+        return db;
     }
 }

@@ -11,14 +11,14 @@
                 </div>
             </div>
             <div  class="barre-Add-todo">
-                <input ref="taskInput" type="text" >
-                <p @click="addTask()">Add</p>
+                <input @keypress.enter="myStore.sousTask ? addSousTask() : addTask()"  ref="taskInput" type="text" >
+                <p @click="myStore.sousTask ? addSousTask() : addTask()">Add</p>
             </div>
             <div class="container-list-task">
                 <div v-for="(task,index) in listTask"  class="container-task">
-                    <div @click="modifEtatTask(task)" class="container-task-left">
-                        <div  @click="task.complete = !task.complete" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
-                        <p :style="task.complete ? { textDecoration: 'line-through' } : { textDecoration: 'none' }">{{ task.task }}</p>
+                    <div @click=""  class="container-task-left">
+                        <div  @click="modifEtatTask(index)" :style="task.complete ? styleIncompletTask : styleCompletTask"><i  class="fa-solid fa-check"></i></div>
+                        <p @click="sousTaskAndEtat(index)"  :style="task.complete ? { textDecoration: 'line-through' } : { textDecoration: 'none' }" >{{ task.task }}</p>
                     </div>
                     <div @click="suppTask(index)" class="container-task-right"><i class="fa-solid fa-xmark"></i></div>
                 </div>
@@ -31,25 +31,29 @@
 import TodoController from '../../class/todoController'
 import MangaController from '../../class/mangaController';
 import { useMyStore } from '../../stores/store';
+import UserController from '../../class/userController';
 export default{
     data(){
         return{
             myStore:useMyStore(),
             mangaC: new MangaController(),
+            userC: new UserController(),
             styleCompletTask: {
-                    color: 'red',
+                    color: 'white',
                     backgroundColor: 'white',
                     boxSizing: 'border-box',
                     border:'1px solid red',
                 },
             styleIncompletTask: {
                 color: 'white',
+                boxSizing: 'border-box',
                 backgroundColor: 'red',
                 border:'none',
             },
             listTask:[],
-            todoReqC: new TodoController(),
+            //todoReqC: new TodoController(),
             unsubscribe:null,
+            tempo_index:null,
         }
     },
     methods:{
@@ -61,17 +65,40 @@ export default{
                     complete: false
                 };
                 //console.log(this.listTask)
-                //this.listTask.push(newTask);
+                this.listTask.push(newTask);
                 this.mangaC.addTask(newTask)
                 this.$refs.taskInput.value = "";
                 
             }
             
         },
+        sousTaskAndEtat(index){
+            this.myStore.etatSousTask();
+            this.getIndex(index);
+        },
+        getIndex(index){
+            if (this.myStore.sousTask) {
+                this.tempo_index = index;
+                console.log(this.tempo_index)
+            }else{
+                this.tempo_index = null;
+            }
+            
+        },
+        addSousTask(){
+            console.log("sousTask")
+            if (this.tempo_index != null) {
+                //this.listTask[this.tempo_index].add(this.tempo_index)
+                this.listTask[this.tempo_index].sousTask = this.$refs.taskInput.value;
+                this.mangaC.updateTask(this.listTask[this.tempo_index])
+                console.log(this.listTask[this.tempo_index])
+            }
+            this.myStore.etatSousTask();
+        },
         suppTask(index){
-            console.log(this.listTask[index].task)
-            this.todoReqC.suppTask(this.listTask[index].task)
-            //this.listTask.splice(index, 1)
+            //console.log(this.listTask[index].task)
+            //this.todoReqC.suppTask(this.listTask[index].task)
+            this.listTask.splice(index, 1)
             
         },
         async suppTask(titre) {
@@ -90,32 +117,48 @@ export default{
         async getAllTask() {
             //const dbRef = db.ref(db.getDatabase(),`Manga/`);
             try {
-                this.unsubscribe = this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
-                    //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
-                    const data = snapshot.val();
-                    if (data == null) {
-                        console.log("Il n'y a pas de task")
-                    }else{
-                        this.listTask = data;
-                        //console.log(this.listTask);
-                    }
-                    
-                    
-                });
+                if (navigator.onLine == true) {
+                    const user = this.userC.getAuthUser().currentUser;
+                    await this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
+                        //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
 
+                        const data = snapshot.val();
+                        if (data == null) {
+                            console.log("Il n'y a pas de task")
+                        } else {
+
+                            this.listTask = data;
+                            //console.log(data);
+                        }
+
+
+                    });
+                }
 
             } catch (error) {
                 console.error(error);
             }
         },
-        modifEtatTask(objTask){
-            this.mangaC.updateTask(objTask)
+        modifEtatTask(index){
+            //objTask.complete = !objTask.complete;
+            this.listTask[index].complete = !this.listTask[index].complete
+            console.log(this.listTask[index])
+            this.mangaC.updateTask(this.listTask[index])
         }
     },
     mounted(){
-		this.getAllTask();
+        
+        
+		
 		
     },
+    created(){
+        if (navigator.onLine) {
+            this.getAllTask();
+        } 
+            
+       
+    }
 }
 </script>
 
@@ -137,8 +180,8 @@ export default{
 }
 .container-todo{
     position: fixed;
-    height: 600px;
-    width: 400px;
+    height: 50vh;
+    width: 30vh;
     top: 100px;
     left: 40px;
     z-index: 2;
@@ -153,15 +196,21 @@ export default{
     align-items: center;
     justify-content: flex-start;
     margin-left: 10px;
-    height: 10%;
+    height: fit-content;
 }
 .container-titre{
     display: flex;
     flex-direction: row;
     align-items: center;
+    
+}
+.container-titre h1{
+    margin: 0;
+    font-size: 25px;
+    font-size-adjust: 0.5;
 }
 .container-titre i{
-    font-size: 25px;
+    font-size: 20px;
     margin-left: 10px;
     color: rgb(255, 0, 0);
 }
@@ -198,7 +247,7 @@ export default{
     border: none;
     background-color: transparent;
     outline: none;
-    font-size: 25px;
+    font-size: 20px;
     color: rgb(114, 114, 114);
 }
 .barre-Add-todo p{
@@ -210,7 +259,7 @@ export default{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 25px;
+    font-size: 15px;
     font-weight: 700;
     color: aliceblue;
     box-sizing: border-box;
@@ -221,7 +270,8 @@ export default{
     align-items: center;
     justify-content: space-between;
     margin: 0 10px;
-    font-size: 20px;
+    font-size: 18px;
+    margin-top: 5px;
 }
 .container-task-left{
     display: flex;
@@ -229,17 +279,22 @@ export default{
     align-items: center;
 }
 .container-task-left p{
-    margin-left: 20px;
+    margin-left: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 90%;
 }
 .container-task-left div{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 30px;
-    width: 30px;
+    height: 25px;
+    width: 25px;
     border-radius: 50%;
     background-color: rgb(253, 0, 0);
-    font-size: 18px;
+    font-size: 15px;
     color: aliceblue;
+    width: 10%;
 }
+
 </style>

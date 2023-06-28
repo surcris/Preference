@@ -23,7 +23,7 @@ import app from '../../firebase';
 import {auth} from '../../firebase';
 import crypt from "./../class/crypt.js"
 import { useMyStore } from '../stores/store';
-
+import UserController from '../class/userController';
 export default {
     data(){
         return{
@@ -32,37 +32,56 @@ export default {
                 email:"",
                 password:"",
             },
-            
+            usercontrol:new UserController()
         }
     },
     methods:{
         connectUser(){
             //console.log(auth)
-            auth.signInWithEmailAndPassword(auth.getAuth(),this.infoConnexion.email, this.infoConnexion.password)
-                .then((userCredential) => {
-                    // Connexion réussie, récupérer l'utilisateur connecté
-                    const user = userCredential.user;
-                    console.log('Utilisateur connecté ');
-                    const uidCrypt = crypt.encryptData(user.uid);
-                    sessionStorage.setItem("akey",uidCrypt)
-                    this.myStore.updateVariable(2);
-                    
+            if (navigator.onLine) {
+                console.log("Connexion online");
+                this.usercontrol.connectUser(this.infoConnexion.email, this.infoConnexion.password)
+                    .then((userCredential) => {
+                        // Connexion réussie, récupérer l'utilisateur connecté
+                        const user = userCredential.user;
+                        console.log('Utilisateur connecté ');
+                        const uidCrypt = crypt.encryptData(user.uid);
+                        sessionStorage.setItem("akey", uidCrypt)
+                        this.myStore.updateVariable(2);
+
+                        this.$router.push('/accueil');
+
+                    })
+                    .catch((error) => {
+                        // Erreur lors de la connexion, gérer l'erreur
+                        console.error('Erreur de connexion :', error);
+                    });
+                // auth.signInWithEmailAndPassword(auth.getAuth(), this.infoConnexion.email, this.infoConnexion.password)
+
+
+
+
+            } else {
+                console.log("Connexion online")
+                if (this.infoConnexion.email === import.meta.env.VITE_USER) {
+                    sessionStorage.setItem("akey", import.meta.env.VITE_USER);
                     this.$router.push('/accueil');
-                    
-                })
-                .catch((error) => {
-                    // Erreur lors de la connexion, gérer l'erreur
-                    console.error('Erreur de connexion :', error);
-                });
+                }
+
+            }
+
         },
     },
     mounted(){
         
     },
     created(){
+        
+        
         if ( sessionStorage.getItem('akey') != null) {
             this.$router.push('/accueil'); 
         }
+		
     },
 }
 </script>

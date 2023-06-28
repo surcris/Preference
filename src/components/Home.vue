@@ -29,15 +29,16 @@
 		
 	</div>
 	<Menu v-if="myStore.btnSearch" ></Menu>
-	<TodoList v-if="myStore.modeTodo"></TodoList>
+	<TodoList v-show="myStore.modeTodo"></TodoList>
 	<!--<SearchBarre  v-show="myStore.btnSearch" />-->
 	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
 </template>
 
+
 <script lang='js'>
 import { useMyStore } from '../stores/store';
-import {auth,db} from '../../firebase';
+//import {auth,db} from '../../firebase';
 import ModalAdd from './ToolsComponent/ModalAddFav.vue';
 import modalAffManga from './ToolsComponent/modalAffManga.vue';
 import MangaController from '../class/mangaController';
@@ -61,7 +62,7 @@ export default {
 			modalShowFav:false,
 			mangaC: new MangaController(),
 			userC: new UserController(),
-			dbRefManga: db.ref(db.getDatabase(),`Manga/`),
+			
 			unsubscribe:null,
 			affMangaObj:null,
 			modifMangaObj:null,
@@ -70,7 +71,7 @@ export default {
     },
     methods: {
 		addFavorie() {
-			const user = auth.getAuth().currentUser;
+			const user = userC.getAuthUser().currentUser;
 			try {
 				if (user!=null) {
 					console.log(user.uid)
@@ -92,6 +93,7 @@ export default {
 		async getAllAff() {
 			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
 			try {
+				//console.log(this.mangaC.getDB())
 				this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefManga(), (snapshot) => {
 					const data = snapshot.val();
 					this.mesFav = data;
@@ -125,8 +127,11 @@ export default {
 		
 	},
     mounted(){
-		this.getAllAff();
-		
+		if (navigator.onLine){
+			this.getAllAff();
+		}else{
+			console.log("Vous êtes pas connecter")
+		}
     },
 	watch:{
         "myStore.modeModalFav": {
@@ -141,7 +146,12 @@ export default {
         }
     },
 	created(){
-		if (this.userC.maintainUser() == false && sessionStorage.getItem("akey") == null) {
+		// if (this.userC.maintainUser() == false || sessionStorage.getItem("akey") == null) {
+		// 	this.$router.push("authentification");
+		// 	console.log('redirect')
+		// }
+		
+		if (sessionStorage.getItem("akey") == null || this.userC.getAuthUser().currentUser == null) {
 			this.$router.push("authentification");
 			console.log('redirect')
 		}

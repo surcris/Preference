@@ -1,17 +1,17 @@
 import {db} from '../../firebase';
 
 export default class TodoController{
-    database = db.getDatabase();
+    //database = db.getDatabase();
 
-    getDBref(name){
-        return db.ref(this.database)
-    }
-    getDBrefName(name){
-        return db.ref(this.database, 'ToDo/' + name)
-    }
-    getDBrefTodo(){
-        return db.ref(this.database, '/ToDo/')
-    }
+    // getDBref(name){
+    //     return db.ref(this.database)
+    // }
+    // getDBrefName(name){
+    //     return db.ref(this.database, 'ToDo/' + name)
+    // }
+    // getDBrefTodo(){
+    //     return db.ref(this.database, '/ToDo/')
+    // }
     async addTask(objetMange){
         try {
            
