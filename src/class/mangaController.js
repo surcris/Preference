@@ -1,14 +1,14 @@
 import {db} from '../../firebase';
-
+import UserController from './userController';
 const databaseRef = db.ref(db.getDatabase());
 //const mangaRef = databaseRef.child('Manga');
 
 export default class MangaController{
-    
+    userC = new UserController()
     async addManga(objetMange) {
         try {
            
-            await db.set(db.ref(db.getDatabase(), '/Manga/' + objetMange.titre), {
+            await this.userC.getDB().set(this.userC.getDB().ref(this.userC.getDB().getDatabase(), '/Manga/' + objetMange.titre), {
                 titre: objetMange.titre,
                 status: objetMange.status,
                 commentaire: objetMange.commentaire,
@@ -77,14 +77,20 @@ export default class MangaController{
     async addTask(objetMange){
         try {
            
-            await db.set(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
-                task: objetMange.task,
-                complete: objetMange.complete,
-                // dateCreation: objetMange.dateCreation,
-                // dateComplete: objetMange.dateComplete,
-                
+            if (objetMange.sousTask) {
+                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                    task: objetMange.task,
+                    complete: objetMange.complete,
+                    sousTask: objetMange.sousTask
 
-            });
+                });
+            }else{
+                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                    task: objetMange.task,
+                    complete: objetMange.complete,
+                    
+                });
+            }
 
             console.log('Task ajouté avec succès');
         } catch (error) {
@@ -93,12 +99,20 @@ export default class MangaController{
     }
     async updateTask(objetMange){
         try {
-            
-            await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
-                task: objetMange.task,
-                complete: objetMange.complete,
+            if (objetMange.sousTask) {
+                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                    task: objetMange.task,
+                    complete: objetMange.complete,
+                    sousTask: objetMange.sousTask
 
-            });
+                });
+            }else{
+                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                    task: objetMange.task,
+                    complete: objetMange.complete,
+                    
+                });
+            }
 
             console.log('Task update avec succès');
         } catch (error) {

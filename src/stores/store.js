@@ -10,6 +10,7 @@ export const useMyStore = defineStore('myStore', {
     modeSend:true,
     btnSearch:false,
     modeTodo:false,
+    sousTask:false,
   }),
   actions: {
     updateVariable(newValue) {
@@ -25,11 +26,15 @@ export const useMyStore = defineStore('myStore', {
     },
     etatbtnSearch() {
       this.btnSearch = !this.btnSearch;
-      //console.log(this.modalShowFav)
+      console.log(this.btnSearch)
     },
     etatmodeTodo() {
       this.modeTodo = !this.modeTodo;
       //console.log(this.modalShowFav)
+    },
+    etatSousTask() {
+      this.sousTask = !this.sousTask;
+      console.log(this.sousTask)
     },
   },
 });

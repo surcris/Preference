@@ -39,7 +39,7 @@
 
 <script>
 import { useMyStore } from '../../stores/store';
-
+import UserController from '../../class/userController';
 import MangaController from '../../class/mangaController';
 export default {
     props:['manga'],
@@ -56,6 +56,7 @@ export default {
             },
             messageForm:null,
             lienCount:1,
+            userC: new UserController(),
         }
     },
     methods:{
@@ -81,37 +82,70 @@ export default {
             //let verifExist = 
             //console.log(this.mangaExist(this.objManga.titre))
             try {
-                const snapshot = await this.mangaC.getOneManga(this.objManga.titre);
-                const data = snapshot.val();
+                if (navigator.onLine == true) {
+                    //console.log("1");
+                    const snapshot = await this.mangaC.getOneManga(this.objManga.titre);
+                    const data = snapshot.val();
+                    const user = this.userC.getAuthUser().currentUser;
+                    console.log(user);
+                    //this.userC.maintainUser()
+                    if (data == null && user != null) {
+                        //console.log("2");
+                        this.messageForm = null;
+                        this.mangaC.addManga(this.objManga);
 
-                if (data === null) {
-                    this.messageForm = null;
-                    this.mangaC.addManga(this.objManga);
+                        //Réinitialisation des valeurs de objManga
+                        this.objManga.titre = null;
+                        this.objManga.commentaire = null;
+                        this.objManga.image = null;
+                        this.objManga.status = null;
+                        this.objManga.lien.length = 0;
+                        
 
-                    //Réinitialisation des valeurs de objManga
-                    this.objManga.titre = null;
-                    this.objManga.commentaire = null;
-                    this.objManga.image = null;
-                    this.objManga.status = null;
-                    this.objManga.lien.length = 0;
+                        //Réinitialisation des valeurs des inputs
+                        this.$refs.titre.value = '';
+                        this.$refs.commentaire.value = '';
+                        this.$refs.imglien.value = '';
+                        this.$refs.finis.checked = false;
+                        this.$refs.encours.checked = false;
+                        this.lienCount = 1;
+                        this.$refs.lien.length = this.lienCount;
+
+                        this.$refs.lien[0].value = '';  
+                    }else{
+                        if (data!=null) {
+                            this.messageForm = "Titre déjà enregistrer"
+                        }else if(user==null){
+                            this.messageForm = "Vous n'etes pas connecter"
+                        }
+                        
+                    }
                     
-
-                    //Réinitialisation des valeurs des inputs
-                    this.$refs.titre.value = '';
-                    this.$refs.commentaire.value = '';
-                    this.$refs.imglien.value = '';
-                    this.$refs.finis.checked = false;
-                    this.$refs.encours.checked = false;
-                    this.lienCount = 1;
-                    this.$refs.lien.length = this.lienCount;
-
-                    this.$refs.lien[0].value = '';
                 } else {
-                    this.messageForm = "Titre déjà enregistrer"
                     
+                    this.messageForm = "Vous n'etes pas connecter a internet !!!"
                 }
+
+                //Réinitialisation des valeurs de objManga
+                this.objManga.titre = null;
+                this.objManga.commentaire = null;
+                this.objManga.image = null;
+                this.objManga.status = null;
+                this.objManga.lien.length = 0;
+                
+
+                //Réinitialisation des valeurs des inputs
+                this.$refs.titre.value = '';
+                this.$refs.commentaire.value = '';
+                this.$refs.imglien.value = '';
+                this.$refs.finis.checked = false;
+                this.$refs.encours.checked = false;
+                this.lienCount = 1;
+                this.$refs.lien.length = this.lienCount;
+
+                this.$refs.lien[0].value = '';
             } catch (error) {
-                console.error(error);
+                console.error(this.messageForm,error);
                 
             }
 
