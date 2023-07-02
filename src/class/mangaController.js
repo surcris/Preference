@@ -77,20 +77,16 @@ export default class MangaController{
     async addTask(objetMange){
         try {
            
-            if (objetMange.sousTask) {
-                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
-                    task: objetMange.task,
-                    complete: objetMange.complete,
-                    sousTask: objetMange.sousTask
+            
+            let mesSousTask = [];
+            mesSousTask.push(objetMange.sousTask)
+            await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
+                task: objetMange.task,
+                complete: objetMange.complete,
+                sousTask: []
 
-                });
-            }else{
-                await db.update(db.ref(db.getDatabase(), '/ToDo/' + objetMange.task), {
-                    task: objetMange.task,
-                    complete: objetMange.complete,
-                    
-                });
-            }
+            });
+            
 
             console.log('Task ajouté avec succès');
         } catch (error) {
@@ -123,9 +119,18 @@ export default class MangaController{
         const dbRef = db.ref(db.getDatabase());
         return db.remove(db.child(dbRef, `ToDo/`+titre))
     }
+    suppSousTask(task,soustask){
+        const dbRef = db.ref(db.getDatabase(),`ToDo/`+task+"/");
+        return db.remove(db.ref(db.getDatabase(),`ToDo/`+task+'/sousTask/'+soustask))
+    }
     getAllTask() {
         const dbRef = db.ref(db.getDatabase());
         return db.get(db.child(dbRef, `ToDo/`))
+            
+    }
+    getOneSousTask(task) {
+        const dbRef = db.ref(db.getDatabase(),`ToDo/`+task);
+        return db.get(db.child(dbRef));
             
     }
     getRefTask(){

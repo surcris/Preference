@@ -11,7 +11,7 @@ export const useMyStore = defineStore('myStore', {
     btnSearch:false,
     modeTodo:false,
     sousTask:false,
-    actionBdd:false,
+    actionBdd:true,
   }),
   actions: {
     updateVariable(newValue) {
@@ -19,7 +19,7 @@ export const useMyStore = defineStore('myStore', {
     },
     etatModalFav() {
       this.modeModalFav = !this.modeModalFav;
-      //console.log(this.modeModalFav)
+      console.log(this.modeModalFav)
     },
     etatModalShowFav() {
       this.modalShowFav = !this.modalShowFav;
@@ -35,11 +35,11 @@ export const useMyStore = defineStore('myStore', {
     },
     etatSousTask() {
       this.sousTask = !this.sousTask;
-      console.log(this.sousTask)
+      //console.log(this.sousTask)
     },
     etatactionBdd() {
       this.actionBdd = !this.actionBdd;
-      console.log(this.actionBdd)
+      //console.log(this.actionBdd)
     },
   },
 });

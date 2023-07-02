@@ -32,7 +32,7 @@ export default{
 }
 .btn-todo , .btn-calc{
 	position: fixed;
-	
+	z-index: 2;
 	right: 15px;
 	height: 50px;
 	width: 50px;

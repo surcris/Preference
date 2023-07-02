@@ -90,13 +90,39 @@ export default {
 			this.myStore.etatModalShowFav();
 			
 		},
+		async getDataInit(){
+			const user = this.userC.getAuthUser().currentUser;
+			try {
+				
+				
+				//console.log(this.mangaC.getDB())
+				if (user) {
+				await this.mangaC.getAllTask()
+					.then((snapshot) => {
+						if (snapshot.exists()) {
+							console.log(snapshot.val());
+						} else {
+							console.log("No data available");
+  						}
+					})
+				
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		},
 		async getAllAff() {
 			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
+			const user = this.userC.getAuthUser().currentUser;
+			if (user) {
+				console.log(user.uid)
+			}
 			try {
 				//console.log(this.mangaC.getDB())
 				this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefManga(), (snapshot) => {
 					const data = snapshot.val();
 					this.mesFav = data;
+					//console.log(this.mesFav)
 				})
 				
 
@@ -152,11 +178,15 @@ export default {
 		// 	console.log('redirect')
 		// }
 		
-		// if (sessionStorage.getItem("akey") == null && this.userC.getAuthUser().currentUser == null) {
-		// 	this.$router.push("authentification");
-		// 	console.log('redirect')
-		// }
-		
+		if (sessionStorage.getItem("akey") == null && this.userC.getAuthUser().currentUser == null) {
+			this.$router.push("authentification");
+			console.log('redirect')
+		}else{
+			
+		}
+		if (navigator.onLine){
+			this.getAllAff();
+		}
 	},
 	destroyed(){
 		this.unsubscribe();
