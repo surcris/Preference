@@ -44,15 +44,15 @@
 </template>
 
 <script>
-import TodoController from '../../class/todoController'
-import MangaController from '../../class/mangaController';
+
+import TodoController from '../../class/todoController';
 import { useMyStore } from '../../stores/store';
 import UserController from '../../class/userController';
 export default{
     data(){
         return{
             myStore:useMyStore(),
-            mangaC: new MangaController(),
+            todo: new TodoController(),
             userC: new UserController(),
             styleCompletTask: {
                     color: 'white',
@@ -97,11 +97,10 @@ export default{
                     task: this.$refs.taskInput.value,
                     complete: false
                 };
-                //console.log(this.listTask)
-                //this.listTask.push(newTask);
+                
                 if (this.myStore.actionBdd) {
-                    this.mangaC.addTask(newTask);
-                    //this.getAllTask();
+                    this.todo.addTask(newTask);
+                    
                 }
                 
                 this.$refs.taskInput.value = "";
@@ -138,23 +137,22 @@ export default{
                     this.listTask[this.tempo_index].sousTask = tabSoustask;
                 }
                 
-                this.mangaC.updateTask(this.listTask[this.tempo_index])
-                //this.getAllTask();
+                this.todo.updateTask(this.listTask[this.tempo_index])
+                
                 this.sousTaskAndEtat(this.tempo_index)
-                //console.log(this.listTask[this.tempo_index])
+                
             }
             this.$refs.taskInput.value = "";
-            //this.myStore.etatSousTask();
+            
         },
         suppSousTask(index,indexST){
-            //console.log("sousTask")
+            
             
             if (index != null) {
                 //console.log(this.listTask[index].sousTask[indexST])
                 this.listTask[index].sousTask.splice(indexST, 1);
                 this.suppSousTaskBdd(this.listTask[index].task,indexST)
-                //this.mangaC.updateTask(this.listTask[this.tempo_index])
-                //this.getAllTask();
+                
             }
             if (this.myStore.sousTask == true) {
                 this.myStore.etatSousTask();
@@ -162,12 +160,9 @@ export default{
             
         },
         suppTask(index){
-            //console.log(this.listTask[index].task)
+            
             this.suppTaskBdd(this.listTask[index].task)
-            // if (this.myStore.actionBdd == false) {
-            //     this.listTask.splice(index, 1)
-            // }
-            //this.getAllTask();
+            
         },
         async suppTaskBdd(titre) {
             //this.mangaC.suppManga(titre);
@@ -175,7 +170,7 @@ export default{
             
 			try {
                 if (navigator.onLine == true && this.myStore.actionBdd) {
-                    await this.mangaC.suppTask(titre)
+                    await this.todo.suppTask(titre)
 					.then(() => {
 							
 							console.log("Task supprimer et mis a jour de l'affichage");
@@ -191,7 +186,7 @@ export default{
             
 			try {
                 if (navigator.onLine == true && this.myStore.actionBdd) {
-                    await this.mangaC.suppSousTask(task,soustask)
+                    await this.todo.suppSousTask(task,soustask)
 					.then(() => {
                             console.log('Sous-élément supprimé avec succès');
                         })
@@ -212,7 +207,7 @@ export default{
                 const user = this.userC.getAuthUser().currentUser;
                 if (navigator.onLine == true && user) {
                    
-                    await this.mangaC.getDB().onValue(this.mangaC.getRefTask(), (snapshot) => {
+                    await this.todo.getDB().onValue(this.todo.getRefTask(), (snapshot) => {
                         //await this.todoReqC.getDB().onValue(this.todoReqC.getDBrefTodo(), (snapshot) => {
                         //console.log("getTask")
                         const data = snapshot.val();
@@ -241,13 +236,13 @@ export default{
             //objTask.complete = !objTask.complete;
             this.listTask[index].complete = !this.listTask[index].complete
             console.log(this.listTask[index])
-            this.mangaC.updateTask(this.listTask[index])
+            this.todo.updateTask(this.listTask[index])
         },
         modifEtatSousTask(index,indexST){
             //objTask.complete = !objTask.complete;
             this.listTask[index].sousTask[indexST].complete = !this.listTask[index].sousTask[indexST].complete
             console.log(this.listTask[index].sousTask[indexST].complete)
-            this.mangaC.updateTask(this.listTask[index])
+            this.todo.updateTask(this.listTask[index])
         }
     },
     mounted(){
@@ -464,10 +459,12 @@ export default{
     justify-content: flex-end;
     align-items: center;
     width: 99%;
-    
+    background-color: rgb(232, 232, 232);
+    border-radius: 2px;
 }
 .souscontainer{
-    margin-bottom: 4px;
+    margin: 2px 0;
+    padding: 2px 0;
 }
 .souscontainer p{
     width: 70%;

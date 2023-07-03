@@ -22,7 +22,16 @@
                     <button class="suppLien" @click="suppLien()">-</button>
                 </div>
                 <div >
-                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" :value="manga == null ? '' : manga.lien[count-1] ">
+                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
+                    :value="manga  ? manga.lien[count-1] : ''  ">
+                </div>
+                <div>
+                    <label for="">Tags :</label>
+                    <div class="container-tags">
+                        <p v-for="tag in tagsComp" @click="tag.active = !tag.active" 
+                        :style="tag.active ? {color:'red',border:'1px solid red'} :{color:'black',border:'1px solid black'} "> 
+                        {{ tag.tags }}</p>
+                    </div>
                 </div>
                 <label for="">Commentaire</label>
                 <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
@@ -40,7 +49,7 @@
 <script>
 import { useMyStore } from '../../stores/store';
 import UserController from '../../class/userController';
-import MangaController from '../../class/mangaController';
+import MangaController from '../../class/todoController';
 export default {
     props:['manga'],
     data(){
@@ -51,15 +60,32 @@ export default {
                 titre:null,
                 status: null,
                 commentaire : null,
+                tags:[],
                 lien:[],
                 image: null,
             },
             messageForm:null,
             lienCount:1,
             userC: new UserController(),
+            tagsSites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga"],
+			tagsCates: ["Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+            tagsComp:[],
         }
     },
     methods:{
+        initTags(){
+			for (let index = 0; index < this.tagsSites.length; index++) {
+				this.tagsComp.push({tags:this.tagsSites[index],active:false}) 
+				
+			}
+			for (let index = 0; index < this.tagsCates.length; index++) {
+				this.tagsComp.push({tags:this.tagsCates[index],active:false}) 
+				
+			}
+			//console.log(this.tagsComp)
+
+			
+		},
         async sendFav() {
             
             this.objManga.titre = this.$refs.titre.value;
@@ -78,9 +104,12 @@ export default {
                     this.objManga.lien.push(this.$refs.lien[index].value)
                 }
             }
-            //console.log(this.objManga);
-            //let verifExist = 
-            //console.log(this.mangaExist(this.objManga.titre))
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                if (this.tagsComp[index].active == true) {
+                    this.objManga.tags.push(this.tagsComp[index].tags)
+                }
+            }
+           
             try {
                 if (navigator.onLine == true) {
                     //console.log("1");
@@ -112,6 +141,11 @@ export default {
                         this.$refs.lien.length = this.lienCount;
 
                         this.$refs.lien[0].value = '';  
+
+                        for (let index = 0; index < this.tagsComp.length; index++) {
+                            this.tagsComp[index].active = false; 
+                            
+                        }
                     }else{
                         if (data!=null) {
                             this.messageForm = "Titre déjà enregistrer"
@@ -177,6 +211,11 @@ export default {
                     this.objManga.lien.push(this.$refs.lien[index].value)
                 }
             }
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                if (this.tagsComp[index].active == true) {
+                    this.objManga.tags.push(this.tagsComp[index].tags)
+                }
+            }
             //console.log(this.objManga);
             this.mangaC.updateManga(this.objManga);
             
@@ -199,6 +238,11 @@ export default {
             this.$refs.lien.length = this.lienCount;
             this.$refs.lien[0].value = '';
             
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                
+                this.tagsComp[index].active = false; 
+                
+            }
             // //console.log(this.$refs.lien.length);
             this.myStore.etatModalFav()
         },
@@ -241,10 +285,15 @@ export default {
             this.lienCount = 1;
             this.$refs.lien.length = this.lienCount;
             this.$refs.lien[0].value = '';
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                this.tagsComp[index].active = false; 
+                
+            }
         }
     },
     mounted(){
        // this.mangaC.getAllManga();
+       this.initTags()
     },
     watch:{
         manga: {
@@ -263,8 +312,15 @@ export default {
                         this.$refs.encours.checked = false;
                     }
 
-                    this.$refs.lien.length = 0;
-                    this.lienCount = this.manga.lien.length;
+                    //this.$refs.lien.length = 0;
+                    
+                    if (this.manga.lien) {
+                        this.lienCount = this.manga.lien.length;
+                        
+                    }else{
+                        this.manga["lien"] = "";
+                    }
+                    
                     
                     
                 }
@@ -349,7 +405,7 @@ export default {
     text-align: center;
     border-radius: 5px;
     display: flex;
-    padding-bottom: 3px;
+    padding: 0 3px 3px 3px;
 }
 .div-buttonAdd .addLien{
     background-color: rgb(0, 255, 34);
@@ -368,6 +424,19 @@ export default {
     border-radius: 5px;
     font-size: 20px;
     
+}
+.container-tags{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.container-tags p{
+    margin:  2px;
+    border: 1px solid black;
+    padding: 0 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
 }
 textarea{
     resize: none;

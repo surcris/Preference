@@ -28,7 +28,7 @@ export default class UserController{
                 auth.onAuthStateChanged(auth.getAuth(), (user) => {
                     if (user) {
                         // L'utilisateur est connecté
-                        console.log('Utilisateur connecté :', user.uid);
+                        //console.log('Utilisateur connecté :', user.uid);
                         console.log('Utilisateur connecté');
                         // Vous pouvez effectuer des actions supplémentaires ici, comme mettre à jour l'état de votre application
                         return true;

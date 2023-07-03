@@ -1,5 +1,6 @@
 import CryptoJS from "crypto-js";
-class Crypt{
+
+export default class Crypt{
     encryptData(data) {
         const key = import.meta.env.VITE_APP_KEY;
         return CryptoJS.AES.encrypt(data, key).toString();
@@ -10,6 +11,3 @@ class Crypt{
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 }
-const crypt = new Crypt();
-console
-export default crypt;

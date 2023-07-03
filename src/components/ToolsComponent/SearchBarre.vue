@@ -48,6 +48,7 @@ export default {
     top: 0;
     left: 0;
     background-color: rgb(0, 0, 0,0.4);
+    
 }
 
 .input-search{
@@ -71,6 +72,8 @@ export default {
 	border-bottom:1px solid black ;
 	font-size: 25px;
 	outline: none;
+    font-family: 'Kodchasan';
+    font-weight: 600;
 }
 
 .input-search i{

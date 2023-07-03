@@ -10,7 +10,7 @@
                     <a :href="lien">{{ lien }}</a>
                 </div>
                 <p>{{ manga.commentaire }}</p>
-                
+                <p v-for="tag in manga.tags">{{tag}}</p>
             </div>
             
         </div>
@@ -20,7 +20,7 @@
 <script>
 import { useMyStore } from '../../stores/store';
 
-import MangaController from '../../class/mangaController';
+import MangaController from '../../class/todoController';
 
 export default {
     props:['manga'],

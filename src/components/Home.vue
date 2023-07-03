@@ -1,36 +1,45 @@
 <template>
 	<div class="home-container">
-		<div @click="activeModalFav" class="container-newCard">
-			<div class="newCard-top">
-				<img src="/images/add.png" alt="" >
-			</div>
-			<div class="newCard-bottom">
-				<h3>Ajout</h3>
-			</div>
+		<div class="tags-home">
+			<p @click="tag.active = !tag.active" :style="tag.active ? 
+			{backgroundColor:'red'} :{backgroundColor:'transparent'} "
+			:ref="'btn-p'"
+			v-for="(tag,index) in tagsComp"  >{{ tag.tags }}</p>
+			
 			
 		</div>
+		<div class="main-content">
+			<div @click="activeModalFav" class="container-newCard">
+				<div class="newCard-top">
+					<img src="/images/add.png" alt="" >
+				</div>
+				<div class="newCard-bottom">
+					<h3>Ajout</h3>
+				</div>
+				
+			</div>
 
-		<div v-for="fav in mesFav" class="container-FavCard">
-			<div class="newCard-modif">
-				<div @click="modifManga(fav)" class="icon-modif"><i class="fa-solid fa-pen"></i></div>
-				<div @click="removeManga(fav.titre)" class="icon-supp"><i class="fa-solid fa-trash"></i></div>
+			<div v-for="(fav,index) in mesFav" :key="index" :ref="index" :class="'container-FavCard-'">
+				<div class="newCard-modif">
+					<div @click="modifManga(fav)" class="icon-modif"><i class="fa-solid fa-pen"></i></div>
+					<div @click="removeManga(fav.titre)" class="icon-supp"><i class="fa-solid fa-trash"></i></div>
+				</div>
+				<div @click="activeModalShowFav(fav)" class="newCard-top">
+					<img src="/images/add.png" alt="" >
+				</div>
+				<div class="newCard-bottom">
+					<h3>{{ fav.titre }}</h3>
+				</div>
+				
 			</div>
-			<div @click="activeModalShowFav(fav)" class="newCard-top">
-				<img src="/images/add.png" alt="" >
+			<div @click="myStore.etatbtnSearch" class="btn-search">
+				<i class="fa-solid fa-magnifying-glass"></i>
 			</div>
-			<div class="newCard-bottom">
-				<h3>{{ fav.titre }}</h3>
-			</div>
-			
 		</div>
-		<div @click="myStore.etatbtnSearch" class="btn-search">
-			<i class="fa-solid fa-magnifying-glass"></i>
-		</div>
-		
 	</div>
 	<Menu v-if="myStore.btnSearch" ></Menu>
 	<TodoList v-if="myStore.modeTodo"></TodoList>
-	<!--<SearchBarre  v-show="myStore.btnSearch" />-->
+	<SearchBarre  v-show="myStore.btnSearch" />
 	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
 </template>
@@ -41,7 +50,8 @@ import { useMyStore } from '../stores/store';
 //import {auth,db} from '../../firebase';
 import ModalAdd from './ToolsComponent/ModalAddFav.vue';
 import modalAffManga from './ToolsComponent/modalAffManga.vue';
-import MangaController from '../class/mangaController';
+import MangaController from '../class/todoController';
+import CryptController from '../class/crypt';
 import UserController from '../class/userController';
 import SearchBarre  from './ToolsComponent/SearchBarre.vue';
 import Menu from './ToolsComponent/Menu.vue';
@@ -62,14 +72,72 @@ export default {
 			modalShowFav:false,
 			mangaC: new MangaController(),
 			userC: new UserController(),
-			
+			tagsSites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga"],
+			tagsCates: ["Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+			tagsComp:[],
+			colors: ["red", "#48D1CC", "green", "orange", "#483D8B", "yellow", "pink"],
 			unsubscribe:null,
 			affMangaObj:null,
 			modifMangaObj:null,
-			
+			randomColor: 0,
+			user:null,
+			cryptTool:new CryptController()
         }
     },
     methods: {
+		showCard(listTags){
+			
+			let l_titre = [];
+			// Créer une liste des mangas correspondant aux tags
+			// const l_titre = this.mesFav.filter((fav) =>
+			// 	fav.tags.some((tag) => listTags.includes(tag))
+			// ).map((fav) => fav.titre);
+
+			// détecte les manga qui ont le tags sélectionner 
+			for (const fav in this.mesFav) {
+				for (let index_f = 0; index_f < this.mesFav[fav].tags.length; index_f++) {
+					for (let index_L = 0; index_L < listTags.length; index_L++) {
+						// vérifie si le tag soit indentique au tag du manga
+						if (listTags[index_L] === this.mesFav[fav].tags[index_f]) {
+							// vérifie que le manga ne soit pas déja dans la liste si non ajout le manga dans la liste et 
+							if (!l_titre.includes(this.mesFav[fav].titre)) {
+								l_titre.push(this.mesFav[fav].titre);
+							}
+						}
+
+					}
+
+				}
+			}
+			// masque les manga qui ne correspondant pas au tag
+			for (const key in this.$refs) {
+				if (key !== "btn-p" && !l_titre.includes(key)) {
+					this.$refs[key][0].style.display = "none";
+				}
+			}
+			// affiche les manga correspondant au tag
+			for (let index = 0; index < l_titre.length; index++) {
+				const refKey = l_titre[index];
+				if (this.$refs[refKey]) {
+					this.$refs[refKey][0].style.display = "flex";
+
+				}
+			}
+			
+		},
+		initTags(){
+			for (let index = 0; index < this.tagsSites.length; index++) {
+				this.tagsComp.push({tags:this.tagsSites[index],active:false}) 
+				
+			}
+			for (let index = 0; index < this.tagsCates.length; index++) {
+				this.tagsComp.push({tags:this.tagsCates[index],active:false}) 
+				
+			}
+			//console.log(this.tagsComp)
+
+			
+		},
 		addFavorie() {
 			const user = userC.getAuthUser().currentUser;
 			try {
@@ -91,48 +159,39 @@ export default {
 			
 		},
 		async getDataInit(){
-			const user = this.userC.getAuthUser().currentUser;
+			
 			try {
-				
-				
-				//console.log(this.mangaC.getDB())
-				if (user) {
-				await this.mangaC.getAllTask()
-					.then((snapshot) => {
-						if (snapshot.exists()) {
-							console.log(snapshot.val());
-						} else {
-							console.log("No data available");
-  						}
-					})
-				
+				if (this.user) {
+					await this.mangaC.getAllTask()
+						.then((snapshot) => {
+							if (!snapshot.exists()) {
+								console.log("Pas de données disponibles");
+							}else{
+								console.log("Données disponible");
+							}
+						})
 				}
 			} catch (error) {
 				console.error(error);
 			}
 		},
 		async getAllAff() {
-			//const dbRef = db.ref(db.getDatabase(),`Manga/`);
-			const user = this.userC.getAuthUser().currentUser;
-			if (user) {
-				console.log(user.uid)
-			}
+			
 			try {
-				//console.log(this.mangaC.getDB())
-				this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefManga(), (snapshot) => {
-					const data = snapshot.val();
-					this.mesFav = data;
-					//console.log(this.mesFav)
-				})
-				
-
+				if (this.user.uid == this.cryptTool.decrypt(sessionStorage.getItem("akey"))) {
+					this.unsubscribe = await this.mangaC.getDB().onValue(this.mangaC.getRefManga(), (snapshot) => {
+						const data = snapshot.val();
+						this.mesFav = data;
+						//console.log(this.mesFav)
+					})
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		},
 		
 		async removeManga(titre) {
-			//const dbRef = db.ref(db.getDatabase());
+			
 			try {
 				await this.mangaC.suppManga(titre)
 					.then(() => {
@@ -148,16 +207,58 @@ export default {
 			this.modifMangaObj = fav;
 			this.myStore.etatModalFav();
 		},
-
+		getRandomColor() {
+			const colors = ["red", "blue", "green", "orange", "purple", "yellow", "pink"];
+			const randomIndex = Math.floor(Math.random() * colors.length);
+			this.randomColor++;
+			if (this.randomColor > colors.length) this.randomColor = 0;
+			console.log(this.randomColor)
+			return colors[this.randomColor];
+		},
+		getTagStyle(index) {
+			// this.randomColor++;
+			const colors = ["red", "blue", "green", "orange", "purple", "yellow", "pink"];
+			// if (this.randomColor > colors.length) this.randomColor = 0;
+			console.log(index)
+			return {
+				border: '2px solid '+colors[index],
+				padding: "5px",
+				fontSize: '20px',
+				color: colors[index],
+				borderRadius: "20px",
+				backgroundColor: "transparent",
+				margin: "5px"
+			};
+		},
 		
 		
 	},
-    mounted(){
-		if (navigator.onLine){
-			this.getAllAff();
-		}else{
-			console.log("Vous êtes pas connecter")
+	computed: {
+		
+	},
+    async mounted(){
+		await new Promise((resolve) => {
+			const interval = setInterval(() => {
+				this.user = this.userC.getAuthUser().currentUser;
+				if (this.user) {
+					clearInterval(interval);
+					resolve();
+				}
+			}, 100);
+		});
+		
+		if ( navigator.onLine) {
+			if (this.user) {
+				this.initTags()
+				this.getAllAff();
+				
+			} else {
+				console.log("Utilisateur non connecté");
+			}
+		} else {
+			console.log("Vous n'êtes pas connecté à Internet");
 		}
+	
     },
 	watch:{
         "myStore.modeModalFav": {
@@ -170,23 +271,47 @@ export default {
                 
             }
         },
+
+		tagsComp: {
+            deep: true,
+            handler() {
+				let l_cate = [];
+				for (const tag of this.tagsComp) {
+					
+					if (tag.active) {
+						//console.log(tag.titre);
+						if (!l_cate.includes(tag.tags)) {
+							l_cate.push(tag.tags);
+							console.log("Tags sélectionner : ",l_cate);
+						}
+						
+					}
+				}
+				if (l_cate.length == 0) {
+					console.log("vide");
+					// affiche tous les mange s'il n'y a pas de tags de séléctionner.
+					for (const key in this.$refs) {
+						if (key !== "btn-p") {
+							this.$refs[key][0].style.display = "flex";
+							//console.log("1",key)
+						}
+					}
+				}else{
+					this.showCard(l_cate);
+				}
+                
+            }
+        },
 		
     },
-	created(){
-		// if (this.userC.maintainUser() == false || sessionStorage.getItem("akey") == null) {
-		// 	this.$router.push("authentification");
-		// 	console.log('redirect')
-		// }
+	async created(){
 		
-		if (sessionStorage.getItem("akey") == null && this.userC.getAuthUser().currentUser == null) {
+
+		if (sessionStorage.getItem("akey") == null ) {
 			this.$router.push("authentification");
 			console.log('redirect')
-		}else{
-			
 		}
-		if (navigator.onLine){
-			this.getAllAff();
-		}
+		
 	},
 	destroyed(){
 		this.unsubscribe();
@@ -200,10 +325,31 @@ export default {
 <style scoped >
 .home-container{
 	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+}
+.tags-home{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-top: 15px;
+}
+.tags-home p{
+	border: 2px solid aliceblue;
+	padding: 5px;
+	font-size: 20px;
+	color: aliceblue; 
+	border-radius: 20px;
+	background-color: transparent;
+	margin: 5px;
+	cursor: pointer;
+}
+.main-content{
+	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
-.container-newCard, .container-FavCard{
+.container-newCard, [class*="container-FavCard"] {
 	border: aliceblue solid 1px;
 	width: 200px;
 	height: 300px;
@@ -215,7 +361,7 @@ export default {
 	cursor: pointer;
 	position: relative;
 }
-.container-newCard img,.container-FavCard img{
+.container-newCard img,[class*="container-FavCard"] img{
 	
 	width: 100px;
 	height: 100px;
@@ -241,7 +387,7 @@ export default {
 	background-color: rgba(255, 0, 0, 0.3);
 	left: 1px;
 }
-.container-FavCard:hover .newCard-modif div{
+[class*="container-FavCard"]:hover .newCard-modif div{
 	opacity: 1;
 }
 .newCard-top {

@@ -19,7 +19,7 @@ export const useMyStore = defineStore('myStore', {
     },
     etatModalFav() {
       this.modeModalFav = !this.modeModalFav;
-      console.log(this.modeModalFav)
+      //console.log(this.modeModalFav)
     },
     etatModalShowFav() {
       this.modalShowFav = !this.modalShowFav;
@@ -27,7 +27,7 @@ export const useMyStore = defineStore('myStore', {
     },
     etatbtnSearch() {
       this.btnSearch = !this.btnSearch;
-      console.log(this.btnSearch)
+      //console.log(this.btnSearch)
     },
     etatmodeTodo() {
       this.modeTodo = !this.modeTodo;
