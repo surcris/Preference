@@ -28,9 +28,9 @@
                 <div>
                     <label for="">Tags :</label>
                     <div class="container-tags">
-                        <p v-for="tag in tagsComp" @click="tag.active = !tag.active" 
-                        :style="tag.active ? {color:'red',border:'1px solid red'} :{color:'black',border:'1px solid black'} "> 
-                        {{ tag.tags }}</p>
+                        <button v-for="(tag,index) in tagsCates" :ref="'btn-'+index" @click="isTagSelected(index)" > 
+                        {{ tag }}
+                        </button>
                     </div>
                 </div>
                 <label for="">Commentaire</label>
@@ -67,24 +67,27 @@ export default {
             messageForm:null,
             lienCount:1,
             userC: new UserController(),
-            tagsSites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga"],
-			tagsCates: ["Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+			tagsCates: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga","Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
             tagsComp:[],
         }
     },
     methods:{
-        initTags(){
-			for (let index = 0; index < this.tagsSites.length; index++) {
-				this.tagsComp.push({tags:this.tagsSites[index],active:false}) 
-				
-			}
+        isTagSelected(index) {
+            this.tagsComp[index].active = !this.tagsComp[index].active;
+            if (this.tagsComp[index].active) {
+                this.$refs['btn-'+index][0].className = "btn-active"
+            }else{
+                this.$refs['btn-'+index][0].className = "btn-notActive"
+            }
+            
+
+        },
+        initTagTab(){
 			for (let index = 0; index < this.tagsCates.length; index++) {
 				this.tagsComp.push({tags:this.tagsCates[index],active:false}) 
 				
 			}
 			//console.log(this.tagsComp)
-
-			
 		},
         async sendFav() {
             
@@ -165,6 +168,7 @@ export default {
                 this.objManga.commentaire = null;
                 this.objManga.image = null;
                 this.objManga.status = null;
+                this.objManga.tags = [];
                 this.objManga.lien.length = 0;
                 
 
@@ -183,13 +187,6 @@ export default {
                 
             }
 
-            // if (this.mangaExist(this.objManga.titre) == false) {
-                
-            // }else{
-                
-            // }
-            //this.myStore.etatModalFav();
-            //console.log(this.$refs.lien.length);
         },
         modifFav() {
             
@@ -217,6 +214,7 @@ export default {
                 }
             }
             //console.log(this.objManga);
+            this.mangaC.suppMangaTags(this.objManga.titre);
             this.mangaC.updateManga(this.objManga);
             
 
@@ -225,6 +223,7 @@ export default {
             this.objManga.commentaire = null;
             this.objManga.image = null;
             this.objManga.status = null;
+            this.objManga.tags = [];
             this.objManga.lien.length = 0;
             
 
@@ -289,40 +288,72 @@ export default {
                 this.tagsComp[index].active = false; 
                 
             }
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                this.$refs['btn-' + index][0].className = "btn-notActive"
+
+            }
         }
     },
     mounted(){
-       // this.mangaC.getAllManga();
-       this.initTags()
+       
+       this.initTagTab()
+    },
+    computed: {
+        classClick() {
+            return {
+                color: 'red',
+                border: '1px solid red'
+            };
+        }
     },
     watch:{
         manga: {
             immediate: true,
             handler() {
                 if (this.manga != null) {
-                    this.$refs.titre.value = this.manga.titre;
-                    this.$refs.commentaire.value = this.manga.commentaire;
-                    this.$refs.imglien.value = this.manga.image;
-                    if (this.manga.status == "En cours") {
-                        this.$refs.encours.checked = true;
-                    } else if (this.manga.status == "Finis") {
-                        this.$refs.finis.checked = true;
-                    } else {
-                        this.$refs.finis.checked = false;
-                        this.$refs.encours.checked = false;
-                    }
-
-                    //this.$refs.lien.length = 0;
-                    
-                    if (this.manga.lien) {
-                        this.lienCount = this.manga.lien.length;
+                    setTimeout(() => {
+                        this.$refs.titre.value = this.manga.titre;
+                        this.$refs.commentaire.value = this.manga.commentaire;
+                        this.$refs.imglien.value = this.manga.image;
+                        if (this.manga.status == "En cours") {
+                            this.$refs.encours.checked = true;
+                        } else if (this.manga.status == "Finis") {
+                            this.$refs.finis.checked = true;
+                        } else {
+                            this.$refs.finis.checked = false;
+                            this.$refs.encours.checked = false;
+                        }
                         
-                    }else{
-                        this.manga["lien"] = "";
-                    }
-                    
-                    
-                    
+                        if (this.manga.lien) {
+                            this.lienCount = this.manga.lien.length;
+
+                        } else {
+                            this.manga["lien"] = "";
+                        }
+                        
+                        for (let index = 0; index < this.tagsComp.length; index++) {
+                            this.$refs['btn-' + index][0].className = "btn-notActive"
+
+                        }
+                        if (this.manga.tags) {
+                            for (let i = 0; i < this.manga.tags.length; i++) {
+
+                                for (let j = 0; j < this.tagsComp.length; j++) {
+
+                                    if (this.manga.tags[i] === this.$refs['btn-' + j][0].textContent) {
+                                        this.$refs['btn-' + j][0].className = "btn-active";
+                                        this.tagsComp[j].active = true;
+
+                                    }
+
+                                }
+
+                            }
+                        }
+                        console.log(this.tagsComp)
+                        
+                        // console.log(this.manga)
+                    }, 10);
                 }
                 
             }
@@ -430,13 +461,24 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
 }
-.container-tags p{
+.container-tags button{
     margin:  2px;
-    border: 1px solid black;
     padding: 0 5px;
     border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
+}
+.container-tags button:active{
+    border-color: red;
+    color: red;
+}
+.btn-active{
+    border-color: red;
+    color: red;
+}
+.btn-notActive{
+    border-color: black;
+    color: black;
 }
 textarea{
     resize: none;

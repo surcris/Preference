@@ -61,6 +61,10 @@ export default class MangaController{
         const dbRef = db.ref(db.getDatabase());
         return db.remove(db.child(dbRef, `Manga/`+titre))
     }
+    suppMangaTags(titre){
+        const dbRef = db.ref(db.getDatabase());
+        return db.remove(db.child(dbRef, `Manga/`+titre+'/tags'))
+    }
     
     getDB(){
         const dbRef = db.ref(db.getDatabase());
