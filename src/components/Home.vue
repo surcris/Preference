@@ -8,7 +8,9 @@
 			
 			
 		</div>
+		<div><h3>{{ messageFiltre }}</h3></div>
 		<div class="main-content">
+			
 			<div @click="activeModalFav" class="container-newCard">
 				<div class="newCard-top">
 					<img src="/images/add.png" alt="" >
@@ -18,7 +20,7 @@
 				</div>
 				
 			</div>
-
+			
 			<div v-for="(fav,index) in mesFav" :key="index" :ref="index" :class="'container-FavCard-'">
 				<div class="newCard-modif">
 					<div @click="modifManga(fav)" class="icon-modif"><i class="fa-solid fa-pen"></i></div>
@@ -81,7 +83,8 @@ export default {
 			modifMangaObj:null,
 			randomColor: 0,
 			user:null,
-			cryptTool:new CryptController()
+			cryptTool:new CryptController(),
+			messageFiltre:""
         }
     },
     methods: {
@@ -89,11 +92,13 @@ export default {
 			console.log(res)
 			
 			if (res == "") {
+				this.messageFiltre = "Aucun résultat";
 				for (const key in this.$refs) {
 					// affiche tous les manga 
 					this.$refs[key][0].style.display = "flex";
 				}
 			} else {
+				this.messageFiltre = res.length+" résultat"
 				for (const key in this.$refs) {
 					for (let index = 0; index < res.length; index++) {
 						if (key.includes(res[index].titre)) {
