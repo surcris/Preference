@@ -1,11 +1,15 @@
 <template>
-    <div ref="mazone" class="containe-search">
-        <div  class="input-search">
-            <input type="text" >
+    
+    <div  class="input-search">
+        <div class="top-search">
+            <input type="text" v-model="valInput" >
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
+        <div v-if="valInput != ''" class="result-search">
+            <p v-for="resultat in searchResults">{{ resultat.titre }}</p>
+        </div>
     </div>
-    
+
 </template>
 
 <script>
@@ -13,10 +17,12 @@ import { useMyStore } from '../../stores/store';
 
 
 export default {
-    
+    props:['mangas'],
     data(){
         return{
             myStore:useMyStore(),
+            valInput:"",
+            resultatSearch:[],
         }
     },
     methods:{
@@ -25,46 +31,78 @@ export default {
     },
     mounted(){
         
-        this.$refs.mazone.addEventListener("click", (event)=>{
-            const xInPixels = `${event.x}px`;
-            const yInPixels = `${event.y}px`;
-            if (event.y > 70) {
-                this.myStore.etatbtnSearch()
-            }
-            //console.log(xInPixels,yInPixels)
+        
+        // this.$refs.mazone.addEventListener("click", (event)=>{
+        //     const xInPixels = `${event.x}px`;
+        //     const yInPixels = `${event.y}px`;
+        //     if (event.y > 70) {
+        //         this.myStore.etatbtnSearch()
+        //     }
+        //     //console.log(xInPixels,yInPixels)
             
-        });
+        // });
+    },
+    computed: {
+        searchResults() {
+            // Effectuer la logique de recherche et retourner les résultats pertinents
+            if (this.mangas && this.valInput != "") {
+                const myArray = Object.values(this.mangas);
+                //console.log(myArray)
+                const filteredResults = myArray.filter(manga => manga.titre.toLowerCase().includes(this.valInput));
+                //console.log(filteredResults)
+                return filteredResults;
+            }
+            
+            
+        }
+    },
+    watch:{
+        valInput:{
+            immediate: true,
+            handler() {
+                //console.log(this.valInput)
+            }
+        },
+        // 'mangas':{
+        //     immediate: true,
+        //     handler() {
+        //         if (this.mangas) {
+        //             console.log(this.mangas)
+        //         }
+                
+        //     }
+        // }
     }
 }
 
 </script>
 
 <style scoped lang="css">
-.containe-search{
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgb(0, 0, 0,0.4);
-    
-}
+
 
 .input-search{
 	position: fixed;
-	top: 35px;
+    z-index: 2;
+	top: 5px;
 	left: 50%;
-	transform: translate(-50%, -50%);
-	height: 50px;
+	transform: translate(-50%, 0%);
 	width: 50%;
-	border-radius: 30px;
-	background-color: azure;
+	display: flex;
+    flex-direction: column;
+	justify-content: center;
+	align-items: center;
+    border-radius: 24px ;
+    background-color: rgb(255, 255, 255);
+}
+.top-search {
+    width: 100%;
+    height: 50px;
+    
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-.input-search input{
+.top-search input{
 	width: 90%;
 	height: 60%;
 	border:none;
@@ -76,8 +114,29 @@ export default {
     font-weight: 600;
 }
 
-.input-search i{
+.top-search i{
 	margin-left: 10px;
 	font-size: 25px;
+}
+.result-search{
+    width: 95%;
+    height: fit-content;
+    background-color: transparent;
+    border-radius:  0 0 5px 5px;
+    display: flex;
+    flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+    padding-bottom: 5px;
+}
+.result-search p{
+    padding: 5px 0;
+    width: 100%;
+    padding-left: 5px;
+}
+.result-search p:hover{
+    border-radius: 5px;
+    background-color: rgb(163, 163, 163);
+    font-weight: 600;
 }
 </style>

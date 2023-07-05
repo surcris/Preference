@@ -39,7 +39,7 @@
 	</div>
 	<Menu v-if="myStore.btnSearch" ></Menu>
 	<TodoList v-if="myStore.modeTodo"></TodoList>
-	<SearchBarre  v-show="myStore.btnSearch" />
+	<SearchBarre  v-if="myStore.btnSearch" :mangas="mesFav" />
 	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
 </template>
