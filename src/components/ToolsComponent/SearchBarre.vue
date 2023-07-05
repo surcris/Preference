@@ -22,7 +22,7 @@ export default {
         return{
             myStore:useMyStore(),
             valInput:"",
-            resultatSearch:[],
+            filteredResults:"",
         }
     },
     methods:{
@@ -46,11 +46,15 @@ export default {
         searchResults() {
             // Effectuer la logique de recherche et retourner les résultats pertinents
             if (this.mangas && this.valInput != "") {
+                const MAX_RESULTS = 5;
                 const myArray = Object.values(this.mangas);
                 //console.log(myArray)
-                const filteredResults = myArray.filter(manga => manga.titre.toLowerCase().includes(this.valInput));
-                //console.log(filteredResults)
-                return filteredResults;
+                this.filteredResults = myArray
+                    .filter(manga => manga.titre.toLowerCase().includes(this.valInput))
+                    .slice(0, MAX_RESULTS)
+
+                // console.log(this.filteredResults)
+                return this.filteredResults;
             }
             
             
@@ -63,15 +67,13 @@ export default {
                 //console.log(this.valInput)
             }
         },
-        // 'mangas':{
-        //     immediate: true,
-        //     handler() {
-        //         if (this.mangas) {
-        //             console.log(this.mangas)
-        //         }
-                
-        //     }
-        // }
+        filteredResults:{
+            immediate: true,
+            handler() {
+                //console.log("send")
+                this.$emit("getFiltre",this.filteredResults)
+            }
+        }
     }
 }
 

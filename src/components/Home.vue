@@ -39,7 +39,7 @@
 	</div>
 	<Menu v-if="myStore.btnSearch" ></Menu>
 	<TodoList v-if="myStore.modeTodo"></TodoList>
-	<SearchBarre  v-if="myStore.btnSearch" :mangas="mesFav" />
+	<SearchBarre @getFiltre="getEmitFiltre"  v-if="myStore.btnSearch" :mangas="mesFav" />
 	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
 </template>
@@ -85,14 +85,35 @@ export default {
         }
     },
     methods: {
+		getEmitFiltre(res){
+			console.log(res)
+			
+			if (res == "") {
+				for (const key in this.$refs) {
+					// affiche tous les manga 
+					this.$refs[key][0].style.display = "flex";
+				}
+			} else {
+				for (const key in this.$refs) {
+					for (let index = 0; index < res.length; index++) {
+						if (key.includes(res[index].titre)) {
+							// affiche les manga qui correspondant au titre
+							this.$refs[key][0].style.display = "flex";
+							console.log('yes', key);
+							break;
+						} else {
+							// masque les manga qui ne correspondant pas au titre	
+							this.$refs[key][0].style.display = "none";
+						}
+					}
+				}
+			}
+				
+		},
 		showCard(listTags){
 			
 			let l_titre = [];
-			// Créer une liste des mangas correspondant aux tags
-			// const l_titre = this.mesFav.filter((fav) =>
-			// 	fav.tags.some((tag) => listTags.includes(tag))
-			// ).map((fav) => fav.titre);
-
+			
 			// détecte les manga qui ont le tags sélectionner 
 			for (const fav in this.mesFav) {
 				for (let index_f = 0; index_f < this.mesFav[fav].tags.length; index_f++) {
@@ -284,7 +305,7 @@ export default {
 							l_cate.push(tag.tags);
 							console.log("Tags sélectionner : ",l_cate);
 						}
-						
+						this.getEmitFiltre();
 					}
 				}
 				if (l_cate.length == 0) {
