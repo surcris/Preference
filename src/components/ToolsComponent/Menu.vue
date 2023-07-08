@@ -24,11 +24,16 @@
 				<i class="fa-solid fa-circle-plus"></i>
 				<p>Ajout Manga</p>
 			</div>
+			<div @click="deconnect" class="btn-mobile-calc" >
+				<i class="fa-solid fa-right-from-bracket"></i>
+				<p>Déconnexion</p>
+			</div>
 		</div>
 	
 </template>
 
 <script>
+import { auth } from '../../../firebase';
 import { useMyStore } from '../../stores/store';
 export default{
     data(){
@@ -43,6 +48,22 @@ export default{
 			this.myStore.btnMenu();
 			this.myStore.etatBtnHome()
 		},
+		deconnect() {
+            //console.log(auth)
+            auth.signOut(auth.getAuth())
+                .then((response) => {
+                    // Déconnexion réussie
+                    sessionStorage.removeItem("akey");
+                    console.log('Utilisateur déconnecté');
+                    this.myStore.updateVariable(1);
+                    this.modeHeader = this.myStore.modeHeaderStore;
+                    this.$router.push('/authentification');
+                })
+                .catch((error) => {
+                    // Gestion des erreurs de déconnexion
+                    console.error('Erreur lors de la déconnexion', error);
+                });
+        }
 		
 	},
 	
