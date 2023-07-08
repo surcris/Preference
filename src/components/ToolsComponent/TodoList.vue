@@ -356,19 +356,19 @@ export default{
     color: rgb(107, 1, 1);
 }
 .container-list-task{
-    height: 80%;
+    height: 85%;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .barre-Add-todo{
     box-sizing: border-box;
     width: 100%;
-    height: 60px;
+    height: 40px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    height: 10%;
+    
     background-color: rgb(219, 219, 219);
     border-radius: 50px;
 }
@@ -506,7 +506,7 @@ export default{
 @media (max-width: 450px) {
     .page-todo{
         position: fixed;
-        height: 60vh;
+        height: 80vh;
         width: 100vw;
         top: 55px;
         left: 0;
@@ -521,7 +521,7 @@ export default{
     }
     .container-todo{
         position: fixed;
-        height: 60vh;
+        height: 80vh;
         width: 100vw;
         top: 55px;
         left: 0;
