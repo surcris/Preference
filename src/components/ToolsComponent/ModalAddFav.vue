@@ -139,6 +139,7 @@ export default {
                 this.$refs.lien.length = this.lienCount;
 
                 this.$refs.lien[0].value = '';
+                this.myStore.etatModalFav()
             } catch (error) {
                 console.error(this.messageForm,error);
                 

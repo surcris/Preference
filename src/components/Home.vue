@@ -14,9 +14,9 @@
 		<Transition name="tagsChev">
 			<div v-if="etatTagHome">
 				<div class="tags-home" :ref="'tags-home'" >
-					<p @click="tag.active = !tag.active" :style="tag.active ? 
-					{backgroundColor:'red'} :{backgroundColor:'transparent'} "
-					:ref="'btn-p'"
+					<p :style="tag.active ? {backgroundColor:'red'} : {backgroundColor:'transparent'} "
+					@click="tag.active = !tag.active" 
+					:ref="'btn-p'+index"
 					v-for="(tag,index) in tagsComp"  >{{ tag.tags }}</p>
 				</div>
 			</div>
@@ -34,16 +34,16 @@
 				
 			</div>
 			
-			<div v-for="(fav,index) in mesFav" :key="index" :ref="index" :class="'container-FavCard-'">
+			<div v-for="(fav,index) in mesFav" :key="index" :ref="'manga '+index" :class="'container-FavCard-'">
 				<div class="fav-background">
 					<div class="newCard-modif">
 						<div @click="modifManga(fav)" class="icon-modif"><i class="fa-solid fa-pen"></i></div>
 						<div @click="removeManga(fav.titre)" class="icon-supp"><i class="fa-solid fa-trash"></i></div>
 					</div>
 					<div @click="activeModalShowFav(fav)" class="newCard-top">
-						<img src="/images/add.png" alt="" >
+						<img src="/images/poulet.png" alt="" >
 					</div>
-					<div class="newCard-bottom">
+					<div @click="activeModalShowFav(fav)" class="newCard-bottom">
 						<h3>{{ fav.titre }}</h3>
 					</div>
 				</div>
@@ -110,6 +110,20 @@ export default {
         }
     },
     methods: {
+		isTagSelected(index) {
+            console.log(this.tagsComp[index])
+			
+            this.tagsComp[index].active = !this.tagsComp[index].active;
+            if (this.tagsComp[index].active) {
+                // this.$refs['btn-'+index][0].className = "btn-active"
+                this.$refs['btn-p'+index][0].style.backgroundColor = "red"
+            }else{
+                // this.$refs['btn-'+index][0].className = "btn-notActive"
+                this.$refs['btn-p'+index][0].style.backgroundColor = "transparent"
+            }
+            console.log(this.$refs['btn-p'+index])
+
+        },
 		getEmitFiltre(res){
 			// console.log(res)
 			if (res != null) {
@@ -151,7 +165,7 @@ export default {
 			
 		},
 		showCard(listTags){
-			
+			console.log(this.$refs)
 			let l_titre = [];
 			
 			// détecte les manga qui ont le tags sélectionner 
@@ -161,8 +175,8 @@ export default {
 						// vérifie si le tag soit indentique au tag du manga
 						if (listTags[index_L] === this.mesFav[fav].tags[index_f]) {
 							// vérifie que le manga ne soit pas déja dans la liste si non ajout le manga dans la liste et 
-							if (!l_titre.includes(this.mesFav[fav].titre)) {
-								l_titre.push(this.mesFav[fav].titre);
+							if (!l_titre.includes("manga "+this.mesFav[fav].titre)) {
+								l_titre.push("manga "+this.mesFav[fav].titre);
 							}
 						}
 
@@ -172,7 +186,8 @@ export default {
 			}
 			// masque les manga qui ne correspondant pas au tag
 			for (const key in this.$refs) {
-				if (key !== "btn-p" && !l_titre.includes(key)) {
+				console.log(key,l_titre.includes(key))
+				if (key.startsWith("manga") && !l_titre.includes(key)) {
 					this.$refs[key][0].style.display = "none";
 				}
 			}
@@ -330,10 +345,10 @@ export default {
 					}
 				}
 				if (l_cate.length == 0) {
-					// console.log("vide");
+					 console.log("vide");
 					// affiche tous les mange s'il n'y a pas de tags de séléctionner.
 					for (const key in this.$refs) {
-						if (key !== "btn-p") {
+						if (key.startsWith("manga") ) {
 							this.$refs[key][0].style.display = "flex";
 							//console.log("1",key)
 						}
@@ -469,7 +484,7 @@ export default {
 	font-size: 20px;
 	color: aliceblue; 
 	border-radius: 20px;
-	background-color: transparent;
+	
 	margin: 5px;
 	cursor: pointer;
 }
@@ -504,8 +519,8 @@ export default {
 }
 .container-newCard img,[class*="container-FavCard"] img{
 	
-	width: 100px;
-	height: 100px;
+	width: 100%;
+	height: auto;
 }
 .newCard-modif div{
 	display: flex;
@@ -590,7 +605,7 @@ p{
 		font-size: 15px;
 		color: aliceblue; 
 		border-radius: 20px;
-		background-color: transparent;
+		
 		margin: 1px 2px;
 		cursor: pointer;
 	}
@@ -600,12 +615,37 @@ p{
 	}
 	
 	[class*="container-FavCard"]{
-		width: 50%;
+		width: 33%;
+		
 		padding: 5px;
+		
+	}
+	[class*="container-FavCard"] h3{
+		font-size: 15px;
+		max-height: 38px;
+		text-overflow: ellipsis; 
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		
+	}
+	
+	.fav-background{
+		position: relative;
+	}
+	.newCard-modif{
+		position: absolute;
+		width: 100%;
+		left: 0;
+	}
+	.newCard-top{
+		min-height: fit-content;
 		
 	}
 	.fav-background{
 		width: 100%;
+		max-height: 160px;
 		box-sizing: border-box;
 		padding: 0;
 		margin: 0px;
