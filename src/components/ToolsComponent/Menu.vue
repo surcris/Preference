@@ -21,7 +21,7 @@
 				<i class="fa-solid fa-calculator"></i>
 				<p>Calculatrice</p>
 			</div>
-			<div @click="btnAjoutManga" class="btn-mobile-calc" >
+			<div @click="myStore.btnAjoutManga" class="btn-mobile-calc" >
 				<i class="fa-solid fa-circle-plus"></i>
 				<p>Ajout Manga</p>
 			</div>
@@ -44,13 +44,7 @@ export default{
         }
     },
 	methods:{
-		btnAjoutManga(){
-			this.myStore.etatModalFav();
-			this.myStore.btnMenu();
-			this.myStore.etathome = true;
-			this.myStore.modeTodo = false;
-			
-		},
+		
 		deconnect() {
             //console.log(auth)
             auth.signOut(auth.getAuth())

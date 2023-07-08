@@ -282,9 +282,7 @@ export default {
 		modifManga(fav){
 			
 			this.modifMangaObj = fav;
-			this.myStore.etatModalFav();
-			this.myStore.etatBtnHome();
-			//this.myStore.btnMenu();
+			this.myStore.btnAjoutManga()
 		},
 		
 		
@@ -345,7 +343,7 @@ export default {
 					}
 				}
 				if (l_cate.length == 0) {
-					 console.log("vide");
+					// console.log("vide");
 					// affiche tous les mange s'il n'y a pas de tags de séléctionner.
 					for (const key in this.$refs) {
 						if (key.startsWith("manga") ) {

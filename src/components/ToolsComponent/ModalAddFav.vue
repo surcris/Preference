@@ -18,11 +18,16 @@ export default {
                 image: null,
             },
             messageForm:null,
-            lienCount:1,
+            lienCount:[
+                {
+                    lien:''
+                }
+            ],
             userC: new UserController(),
 			tagsCates: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga","Romance",
              "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era","Villainess","Revenge","System"],
             tagsComp:[],
+
         }
     },
     methods:{
@@ -47,7 +52,8 @@ export default {
 			//console.log(this.tagsComp)
 		},
         async sendFav() {
-            
+            console.log(this.$refs)
+            // console.log(this.lienCount)
             this.objManga.titre = this.$refs.titre.value;
             this.objManga.commentaire = this.$refs.commentaire.value;
             this.objManga.image = this.$refs.imglien.value;
@@ -59,9 +65,12 @@ export default {
             } else {
                 this.objManga.status = null;
             }
-            for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index].value)
+            for (let index = 0; index < this.lienCount.length; index++) {
+                
+                if (this.lienCount[index].lien != "") {
+                    
+                    this.objManga.lien.push(this.lienCount[index].lien)
+                    console.log(this.objManga.lien);
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -69,14 +78,14 @@ export default {
                     this.objManga.tags.push(this.tagsComp[index].tags)
                 }
             }
-           
+            // console.log(this.objManga.lien);
             try {
                 if (navigator.onLine == true) {
                     //console.log("1");
                     const snapshot = await this.mangaC.getOneManga(this.objManga.titre);
                     const data = snapshot.val();
                     const user = this.userC.getAuthUser().currentUser;
-                    console.log(user);
+                    // console.log(data);
                     //this.userC.maintainUser()
                     if (data == null && user != null) {
                         //console.log("2");
@@ -97,15 +106,18 @@ export default {
                         this.$refs.imglien.value = '';
                         this.$refs.finis.checked = false;
                         this.$refs.encours.checked = false;
-                        this.lienCount = 1;
-                        this.$refs.lien.length = this.lienCount;
-
-                        this.$refs.lien[0].value = '';  
-
+                          
+                        for (let index = 0; index < this.lienCount.length; index++) {
+                            
+                            this.$refs['lien'+index].value = '';
+                        }
+                        this.lienCount.length = 1;
+                        
                         for (let index = 0; index < this.tagsComp.length; index++) {
                             this.tagsComp[index].active = false; 
                             
                         }
+                        this.myStore.etatModalFav();
                     }else{
                         if (data!=null) {
                             this.messageForm = "Titre déjà enregistrer"
@@ -120,26 +132,7 @@ export default {
                     this.messageForm = "Vous n'etes pas connecter a internet !!!"
                 }
 
-                //Réinitialisation des valeurs de objManga
-                this.objManga.titre = null;
-                this.objManga.commentaire = null;
-                this.objManga.image = null;
-                this.objManga.status = null;
-                this.objManga.tags = [];
-                this.objManga.lien.length = 0;
                 
-
-                //Réinitialisation des valeurs des inputs
-                this.$refs.titre.value = '';
-                this.$refs.commentaire.value = '';
-                this.$refs.imglien.value = '';
-                this.$refs.finis.checked = false;
-                this.$refs.encours.checked = false;
-                this.lienCount = 1;
-                this.$refs.lien.length = this.lienCount;
-
-                this.$refs.lien[0].value = '';
-                this.myStore.etatModalFav()
             } catch (error) {
                 console.error(this.messageForm,error);
                 
@@ -161,9 +154,9 @@ export default {
                 this.objManga.status = null;
             }
             
-            for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index].value)
+            for (let index = 0; index < this.lienCount.length; index++) {
+                if (this.lienCount[index].lien != "") {
+                    this.objManga.lien.push(this.lienCount[index].lien)
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -171,7 +164,7 @@ export default {
                     this.objManga.tags.push(this.tagsComp[index].tags)
                 }
             }
-            //console.log(this.objManga);
+            // console.log(this.objManga.lien);
             this.mangaC.suppMangaTags(this.objManga.titre);
             this.mangaC.updateManga(this.objManga);
             
@@ -191,17 +184,18 @@ export default {
             this.$refs.imglien.value = '';
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
-            this.lienCount = 1;
-            this.$refs.lien.length = this.lienCount;
-            this.$refs.lien[0].value = '';
+            for (let index = 0; index < this.lienCount.length; index++) {
+                this.$refs['lien' + index].value = '';
+            }
+            this.lienCount.length = 1;
             
             for (let index = 0; index < this.tagsComp.length; index++) {
                 
                 this.tagsComp[index].active = false; 
                 
             }
-            // //console.log(this.$refs.lien.length);
-            this.myStore.etatModalFav()
+            
+            this.myStore.etatModalFav();
         },
         async mangaExist(titre) {
             try {
@@ -221,13 +215,15 @@ export default {
             }
         },
         addLien(){
-            this.lienCount++; 
+            this.lienCount.push({lien:''}); 
+            console.log(this.lienCount)
         },
         suppLien(){
-            if (this.lienCount > 1) {
-                this.lienCount--;
+            if (this.lienCount.length > 1) {
+                this.lienCount.pop();
+                console.log(this.lienCount)
             }
-            
+            console.log(this.lienCount)
         },
         closeModal(){
             this.myStore.etatModalFav();
@@ -239,7 +235,7 @@ export default {
             this.$refs.imglien.value = '';
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
-            this.lienCount = 1;
+            this.lienCount.length = 1;
             this.$refs.lien.length = this.lienCount;
             this.$refs.lien[0].value = '';
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -281,9 +277,16 @@ export default {
                             this.$refs.finis.checked = false;
                             this.$refs.encours.checked = false;
                         }
+                       
+                        this.lienCount.pop()
                         
                         if (this.manga.lien) {
-                            this.lienCount = this.manga.lien.length;
+                            
+                            for (let index = 0; index < this.manga.lien.length; index++) {
+                                this.lienCount.push({lien:this.manga.lien[index]}); 
+                                
+                            }
+                            console.log(this.lienCount)
 
                         } else {
                             this.manga["lien"] = "";
@@ -308,11 +311,12 @@ export default {
 
                             }
                         }
-                        console.log(this.tagsComp)
+                        // console.log(this.tagsComp)
                         
                         // console.log(this.manga)
                     }, 10);
                 }
+                
                 
             }
         }
@@ -344,9 +348,9 @@ export default {
                     <button class="addLien" @click="addLien()">+</button>
                     <button class="suppLien" @click="suppLien()">-</button>
                 </div>
-                <div >
-                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
-                    :value="manga  ? manga.lien[count-1] : ''  ">
+                <div v-for="(count,index) in lienCount" :key="index">
+                    <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
+                    >
                 </div>
                 <div>
                     <label for="">Tags :</label>
@@ -399,9 +403,9 @@ export default {
                     -->
                     
                 </div>
-                <div >
-                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
-                    :value="manga  ? manga.lien[count-1] : ''  ">
+                <div v-for="(count,index) in lienCount" :key="index">
+                    <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
+                    >
                 </div>
             </div>
             
@@ -505,7 +509,7 @@ export default {
     background-color: rgb(255, 0, 0);
     border: solid black 2px;
 }
-.lien{
+[class*="lien"]{
     margin-bottom: 2px;
     height: 30px;
     width: 100%;
@@ -656,7 +660,7 @@ textarea{
         font-size: 20px;
         margin-left: 5px;
     }
-    .lien{
+    [class*="lien"]{
         border: 1px solid rgb(37, 37, 121);
         height: 35px;
     }

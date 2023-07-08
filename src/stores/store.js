@@ -61,6 +61,13 @@ export const useMyStore = defineStore('myStore', {
       this.modeTodo = false;
       //this.modalShowFav = false;
 			
+		},
+    btnAjoutManga(){
+			this.etatModalFav();
+			this.modeMenu = false;
+			this.etathome = true;
+			this.modeTodo = false;
+			
 		}
   },
 });
