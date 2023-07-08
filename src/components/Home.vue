@@ -1,11 +1,11 @@
 <template>
 	<div v-if="myStore.etathome" class="home-container">
 		<div class="header-tag">
-			<div class="header-tag-content">
+			<div @click="etatTagHome = !etatTagHome" class="header-tag-content">
 				<p>Catégorie</p>
 				<Transition name="chevron">
 					<div>
-						<i @click="etatTagHome = !etatTagHome" class="fa-solid fa-chevron-down"></i>
+						<i  class="fa-solid fa-chevron-down"></i>
 					</div>
 				</Transition>
 			</div>
@@ -584,6 +584,17 @@ p{
 		
 		padding-top: 0px;
 	}
+	.tags-home p{
+		border: 1px solid aliceblue;
+		padding: 2px 5px;
+		font-size: 15px;
+		color: aliceblue; 
+		border-radius: 20px;
+		background-color: transparent;
+		margin: 1px 2px;
+		cursor: pointer;
+	}
+	
 	.container-newCard{
 		display: none;
 	}
