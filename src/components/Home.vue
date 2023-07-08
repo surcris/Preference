@@ -167,26 +167,28 @@ export default {
 		showCard(listTags){
 			console.log(this.$refs)
 			let l_titre = [];
-			
+			// console.log(this.mesFav)
 			// détecte les manga qui ont le tags sélectionner 
 			for (const fav in this.mesFav) {
-				for (let index_f = 0; index_f < this.mesFav[fav].tags.length; index_f++) {
-					for (let index_L = 0; index_L < listTags.length; index_L++) {
-						// vérifie si le tag soit indentique au tag du manga
-						if (listTags[index_L] === this.mesFav[fav].tags[index_f]) {
-							// vérifie que le manga ne soit pas déja dans la liste si non ajout le manga dans la liste et 
-							if (!l_titre.includes("manga "+this.mesFav[fav].titre)) {
-								l_titre.push("manga "+this.mesFav[fav].titre);
+				if (this.mesFav[fav].tags) {
+					for (let index_f = 0; index_f < this.mesFav[fav].tags.length; index_f++) {
+						for (let index_L = 0; index_L < listTags.length; index_L++) {
+							// vérifie si le tag soit indentique au tag du manga
+							if (listTags[index_L] === this.mesFav[fav].tags[index_f]) {
+								// vérifie que le manga ne soit pas déja dans la liste si non ajout le manga dans la liste et 
+								if (!l_titre.includes("manga " + this.mesFav[fav].titre)) {
+									l_titre.push("manga " + this.mesFav[fav].titre);
+								}
 							}
+
 						}
 
 					}
-
 				}
 			}
 			// masque les manga qui ne correspondant pas au tag
 			for (const key in this.$refs) {
-				console.log(key,l_titre.includes(key))
+				// console.log(key,l_titre.includes(key))
 				if (key.startsWith("manga") && !l_titre.includes(key)) {
 					this.$refs[key][0].style.display = "none";
 				}
