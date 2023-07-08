@@ -6,7 +6,7 @@
                     <h1>To-Do List</h1>
                     <i class="fa-solid fa-list-check"></i>
                 </div>
-                <div @click="myStore.etatmodeTodo()" class="container-close">
+                <div @click="myStore.etatmodeTodo();myStore.etatBtnHome()" class="container-close">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
             </div>
