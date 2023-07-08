@@ -12,7 +12,8 @@
 				<i class="fa-solid fa-house"></i>
 				<p>Accueil</p>
 			</div>
-			<div @click="myStore.etatmodeTodo()" class="btn-mobile-todo " >
+			<div @click="myStore.etatmodeTodo(); myStore.btnMenu(); 
+			myStore.etatBtnHome(); myStore.modeModalFav = false;" class="btn-mobile-todo " >
 				<i class="fa-solid fa-clipboard-list"></i>
 				<p>ToDo List</p>
 			</div>
@@ -46,7 +47,9 @@ export default{
 		btnAjoutManga(){
 			this.myStore.etatModalFav();
 			this.myStore.btnMenu();
-			this.myStore.etatBtnHome()
+			this.myStore.etathome = true;
+			this.myStore.modeTodo = false;
+			
 		},
 		deconnect() {
             //console.log(auth)

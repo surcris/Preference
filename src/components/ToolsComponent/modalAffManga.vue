@@ -125,4 +125,16 @@ button{
     border-radius: 5px;
     text-align: center;
 }
+@media (max-width: 450px) {
+    .modalAffFav{
+        height: fit-content;
+        width: 90%;
+        background-color: aliceblue;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        
+    }
+}
 </style>

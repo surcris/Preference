@@ -488,13 +488,43 @@ export default{
     
 }
 
-@media (max-width: 1550px){
+@media (max-width: 1550px ) {
     .container-todo{
         position: fixed;
         height: 60vh;
         width: 50vh;
         top: 100px;
         left: 40px;
+        z-index: 2;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        padding: 0 10px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 450px) {
+    .page-todo{
+        position: fixed;
+        height: 60vh;
+        width: 100vw;
+        top: 55px;
+        left: 0;
+        
+        overflow: auto;
+        
+       
+        display: flex;
+        
+        justify-content: center;
+        align-items: center;
+    }
+    .container-todo{
+        position: fixed;
+        height: 60vh;
+        width: 100vw;
+        top: 55px;
+        left: 0;
         z-index: 2;
         background-color: rgb(255, 255, 255);
         border-radius: 10px;

@@ -4,7 +4,7 @@
             <i class="fa-solid fa-bars-staggered"></i>
         </div>
         
-        <div @click="myStore.etatbtnSearch" class="icon-search">
+        <div v-if="myStore.etathome && myStore.modeModalFav == false" @click="myStore.etatbtnSearch" class="icon-search">
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
         <div class="header-accueil" v-if="modeHeader == 2">

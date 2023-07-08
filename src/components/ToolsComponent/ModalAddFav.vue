@@ -367,7 +367,7 @@ export default {
         </div>
 	</div>
     <div class="container-mobile-modalFav">
-
+        <div @click="myStore.btnAccueil()" class="cross">X</div>
         <h3>Ajouter un Manga</h3>
         <div class="content-mobile-modalFav">
             <label for="">Titre</label>
