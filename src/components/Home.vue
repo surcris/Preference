@@ -616,13 +616,13 @@ p{
 	
 	[class*="container-FavCard"]{
 		width: 33%;
-		
+		height: fit-content;
 		padding: 5px;
 		
 	}
 	[class*="container-FavCard"] h3{
 		font-size: 15px;
-		max-height: 38px;
+		max-height: fit-content;
 		text-overflow: ellipsis; 
 		overflow: hidden;
 		display: -webkit-box;
