@@ -499,6 +499,7 @@ export default {
 	height: 300px;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-around;
 	margin: 20px;
 	border-radius: 5px;
 	background-color: rgb(198, 212, 224);
@@ -620,9 +621,13 @@ p{
 		padding: 5px;
 		
 	}
+	[class*="container-FavCard"] .fav-background{
+		max-height:10%;
+		height: 190px;
+	}
 	[class*="container-FavCard"] h3{
 		font-size: 15px;
-		max-height: fit-content;
+		
 		text-overflow: ellipsis; 
 		overflow: hidden;
 		display: -webkit-box;
