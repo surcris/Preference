@@ -1,15 +1,18 @@
 <template>
     
-    <div  class="input-search">
-        <div class="top-search">
-            <input type="text" v-model="valInput" >
-            <i class="fa-solid fa-magnifying-glass"></i>
+    <!--<transition name="barre">
+        <div v-if="myStore.btnSearch">
+            <div  class="input-search">
+                <div class="top-search">
+                    <input type="text" v-model="valInput" >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div v-if="valInput != ''" class="result-search">
+                    <p v-for="resultat in searchResults">{{ resultat.titre }}</p>
+                </div>
+            </div>
         </div>
-        <div v-if="valInput != ''" class="result-search">
-            <p v-for="resultat in searchResults">{{ resultat.titre }}</p>
-        </div>
-    </div>
-
+    </transition>-->
 </template>
 
 <script>
@@ -81,7 +84,24 @@ export default {
 
 <style scoped lang="css">
 
-
+.barre-enter-from{
+    opacity: 0;
+}
+.barre-enter-to{
+    opacity: 1;
+}
+.barre-enter-active{
+    transition: all 1s ease;
+}
+.barre-leave-from{
+    opacity: 1;
+}
+.barre-leave-to{
+    opacity: 0;
+}
+.barre-leave-active{
+    transition: all 1s ease;
+}
 .input-search{
 	position: fixed;
     z-index: 2;
@@ -95,7 +115,9 @@ export default {
 	align-items: center;
     border-radius: 24px ;
     background-color: rgb(255, 255, 255);
+    transition: width 500ms ease-out;
 }
+
 .top-search {
     width: 100%;
     height: 50px;

@@ -1,50 +1,3 @@
-<template>
-	<div class="container-modalFav">
-		<div class="modalFav">
-            <div @click="closeModal()" class="cross">X</div>
-            <div class="modalFav-contenu">
-                <label for="">Titre</label>
-                <input class="titre" ref="titre" type="text" >
-                <fieldset>
-                    <legend >Status</legend>
-                    <div>
-                        <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
-                        <label for="scales">Finis</label>
-                    </div>
-                    <div>
-                        <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
-                        <label for="En cours">En cours</label>
-                    </div>
-                </fieldset>
-                <div class="div-buttonAdd">
-                    <label for="">Lien :</label>
-                    <button class="addLien" @click="addLien()">+</button>
-                    <button class="suppLien" @click="suppLien()">-</button>
-                </div>
-                <div >
-                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
-                    :value="manga  ? manga.lien[count-1] : ''  ">
-                </div>
-                <div>
-                    <label for="">Tags :</label>
-                    <div class="container-tags">
-                        <button v-for="(tag,index) in tagsCates" :ref="'btn-'+index" @click="isTagSelected(index)" > 
-                        {{ tag }}
-                        </button>
-                    </div>
-                </div>
-                <label for="">Commentaire</label>
-                <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
-                <label for="avatar">Choisir une image:</label>
-                <input ref="imglien" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
-            </div>
-            <div class="validation">
-                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
-                <p>{{messageForm}}</p>
-            </div>
-        </div>
-	</div>
-</template>
 
 <script>
 import { useMyStore } from '../../stores/store';
@@ -67,17 +20,21 @@ export default {
             messageForm:null,
             lienCount:1,
             userC: new UserController(),
-			tagsCates: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga","Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+			tagsCates: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga","Romance",
+             "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era","Villainess","Revenge","System"],
             tagsComp:[],
         }
     },
     methods:{
         isTagSelected(index) {
+            console.log(this.$refs)
             this.tagsComp[index].active = !this.tagsComp[index].active;
             if (this.tagsComp[index].active) {
                 this.$refs['btn-'+index][0].className = "btn-active"
+                this.$refs['p-'+index][0].className = "p-active"
             }else{
                 this.$refs['btn-'+index][0].className = "btn-notActive"
+                this.$refs['p-'+index][0].className = "p-notActive"
             }
             
 
@@ -363,6 +320,106 @@ export default {
 
 </script>
 
+<template>
+	<div class="container-modalFav">
+		<div class="modalFav">
+            <div @click="closeModal()" class="cross">X</div>
+            <div class="modalFav-contenu">
+                <label for="">Titre</label>
+                <input class="titre" ref="titre" type="text" >
+                <fieldset>
+                    <legend >Status</legend>
+                    <div>
+                        <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
+                        <label for="scales">Finis</label>
+                    </div>
+                    <div>
+                        <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
+                        <label for="En cours">En cours</label>
+                    </div>
+                </fieldset>
+                <div class="div-buttonAdd">
+                    <label for="">Lien :</label>
+                    <button class="addLien" @click="addLien()">+</button>
+                    <button class="suppLien" @click="suppLien()">-</button>
+                </div>
+                <div >
+                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
+                    :value="manga  ? manga.lien[count-1] : ''  ">
+                </div>
+                <div>
+                    <label for="">Tags :</label>
+                    <div class="container-tags">
+                        <button v-for="(tag,index) in tagsCates" :ref="'btn-'+index" @click="isTagSelected(index)" > 
+                        {{ tag }}
+                        </button>
+                    </div>
+                </div>
+                <label for="">Commentaire</label>
+                <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
+                <label for="avatar">Choisir une image:</label>
+                <input ref="imglien" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+            </div>
+            <div class="validation">
+                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
+                <p>{{messageForm}}</p>
+            </div>
+        </div>
+	</div>
+    <div class="container-mobile-modalFav">
+
+        <h3>Ajouter un Manga</h3>
+        <div class="content-mobile-modalFav">
+            <label for="">Titre</label>
+            <input class="titre" ref="titre" type="text" placeholder="Titre">
+            <div class="container-fieldset">
+                <fieldset>
+                    <legend >Status</legend>
+                    <div class="content-checkbox">
+                        <div >
+                            <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
+                            <label for="scales">Finis</label>
+                        </div>
+                        <div>
+                            <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
+                            <label for="En cours">En cours</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="div-buttonAdd">
+                <div>
+                    <label for="">Lien :</label>
+                    <i class="fa-solid fa-circle-plus" @click="addLien()"></i>
+                    <i class="fa-solid fa-circle-minus" @click="suppLien()"></i>
+                    <!--
+                        <button class="addLien" @click="addLien()">+</button>
+                    <button class="suppLien" @click="suppLien()">-</button>
+                    -->
+                    
+                </div>
+                <div >
+                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
+                    :value="manga  ? manga.lien[count-1] : ''  ">
+                </div>
+            </div>
+            
+            <div>
+                <label for="">Tags :</label>
+                <div class="container-tags">
+                    <p v-for="(tag,index) in tagsCates" class="p-basic" :ref="'p-'+index" @click="isTagSelected(index)" > 
+                    {{ tag }}
+                    </p>
+                </div>
+            </div>
+            <div class="validation">
+                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
+                <p>{{messageForm}}</p>
+            </div>
+        </div>
+    </div>
+</template>
+
 <style scoped lang="css">
 .container-modalFav{
     position: fixed;
@@ -506,5 +563,153 @@ textarea{
     font-size: 18px;
     font-weight: 700;
     color: rgb(250, 0, 0);
+}
+.container-mobile-modalFav{
+    display: none;
+    
+}
+@media (max-width: 450px) {
+    .container-modalFav{
+        display: none;
+    }
+    .container-mobile-modalFav{
+        display: block;
+        position: absolute;
+        z-index: 0;
+        top: 55px;
+        height: fit-content;
+        width: 90vw;
+        margin: 0 5vw;
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        border-radius: 5px;
+        
+    }
+    .content-mobile-modalFav{
+        padding-top: 10px;
+        width: 95%;
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+    }
+    h3{
+        margin-left: 5px;
+        font-size: 25px;
+    }
+    .content-mobile-modalFav .titre{
+        
+        height: 35px;
+        font-size: 20px;
+        font-weight: 500;
+        border: 1px solid rgb(37, 37, 121);;
+        border-radius: 5px;
+
+    }
+    .content-mobile-modalFav .titre:focus{
+        outline: none;
+        
+    }
+    label{
+        font-weight: 600;
+    }
+    .content-checkbox{
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
+    }
+    .content-checkbox div{
+        margin: 5px ;
+        
+    }
+    .content-checkbox label{
+        font-size: 18px;
+        margin-left: 2px;
+    }
+    .div-buttonAdd{
+        display: flex;
+        flex-direction: column;
+    }
+    .div-buttonAdd div:nth-child(1){
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 5px;
+
+    }
+    label{
+        font-size: 20px; 
+    }
+    .container-fieldset{
+        padding: 10px 0;
+    }
+    
+    .div-buttonAdd div:nth-child(1) i{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(37, 37, 121);
+        font-size: 20px;
+        margin-left: 5px;
+    }
+    .lien{
+        border: 1px solid rgb(37, 37, 121);
+        height: 35px;
+    }
+    .container-tags{
+        color: rgb(37, 37, 121);
+    }
+    .container-tags .p-basic{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid rgb(37, 37, 121);
+        color: rgb(37, 37, 121);
+        
+    }
+    /* .container-tags p:active{
+        border-color: red;
+        color: red;
+    } */
+    .p-active{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid red;
+        color: red;
+    }
+    .p-notActive{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid rgb(37, 37, 121);
+        color: rgb(37, 37, 121);
+    }
+    .validation{
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn-valide{
+        margin: 0;
+        width: 70%;
+        font-size: 18px;
+        font-weight: 700;
+        background-color: rgb(255, 255, 255);
+        border: solid rgb(37, 37, 121) 1px;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
 }
 </style>
