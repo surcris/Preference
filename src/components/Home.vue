@@ -642,6 +642,7 @@ p{
 	.newCard-modif{
 		position: absolute;
 		width: 100%;
+		top: 0;
 		left: 0;
 	}
 	.newCard-top{
