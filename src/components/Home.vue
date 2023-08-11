@@ -40,7 +40,7 @@
 	<Menu v-if="myStore.btnSearch" ></Menu>
 	<TodoList v-if="myStore.modeTodo"></TodoList>
 	<SearchBarre  v-show="myStore.btnSearch" />
-	<ModalAdd :manga="modifMangaObj" v-show="myStore.modeModalFav == true"/>
+	<ModalAdd :manga="modifMangaObj" v-if="myStore.modeModalFav == true"/>
 	<modalAffManga :manga="affMangaObj" v-if="myStore.modalShowFav == true"/>
 </template>
 
@@ -109,6 +109,7 @@ export default {
 
 				}
 			}
+			console.log(l_titre)
 			// masque les manga qui ne correspondant pas au tag
 			for (const key in this.$refs) {
 				if (key !== "btn-p" && !l_titre.includes(key)) {
@@ -282,13 +283,13 @@ export default {
 						//console.log(tag.titre);
 						if (!l_cate.includes(tag.tags)) {
 							l_cate.push(tag.tags);
-							console.log("Tags sélectionner : ",l_cate);
+							//console.log("Tags sélectionner : ",l_cate);
 						}
 						
 					}
 				}
 				if (l_cate.length == 0) {
-					console.log("vide");
+					// console.log("vide");
 					// affiche tous les mange s'il n'y a pas de tags de séléctionner.
 					for (const key in this.$refs) {
 						if (key !== "btn-p") {

@@ -21,16 +21,23 @@
                     <button class="addLien" @click="addLien()">+</button>
                     <button class="suppLien" @click="suppLien()">-</button>
                 </div>
-                <div >
-                    <input class="lien" ref='lien' type="text" v-for="count in lienCount" :key="count" 
-                    :value="manga  ? manga.lien[count-1] : ''  ">
+                <div class="mylink">
+                    <input class="lien" type="text" v-for="count in lienCount" :key="count" :ref="'lien'+count"
+                    :value="listlien[count-1]">
                 </div>
-                <div>
+                <div class="mytags">
                     <label for="">Tags :</label>
                     <div class="container-tags">
-                        <p v-for="tag in tagsComp" @click="tag.active = !tag.active" 
-                        :style="tag.active ? {color:'red',border:'1px solid red'} :{color:'black',border:'1px solid black'} "> 
-                        {{ tag.tags }}</p>
+                        <p v-if="manga==null" v-for="(tag,index) in sites" @click="activeTags(index)" :ref="'tags'+index"
+                        :style="{ color: tagsCates.includes(index) ? 'red' : 'black',
+                            border: tagsCates.includes(index) ? '1px solid red' : '1px solid black' }"> 
+                        {{ tag }}</p>
+                        <p v-if="manga" @click="activeTags(index)" :ref="'tags'+index" v-for="(tag,index) in sites" 
+                        :style="{ color: tagsCates.includes(index) ? 'red' : 'black',
+                            border: tagsCates.includes(index) ? '1px solid red' : '1px solid black' }"
+                            :value="manga.lien[index-1]"> 
+                        {{ tag }}</p>
+                        
                     </div>
                 </div>
                 <label for="">Commentaire</label>
@@ -67,24 +74,33 @@ export default {
             messageForm:null,
             lienCount:1,
             userC: new UserController(),
-            tagsSites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga"],
-			tagsCates: ["Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+            sites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga",
+                "Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
+			tagsCates: [],
             tagsComp:[],
+            listlien:[]
         }
     },
     methods:{
+        activeTags(index){
+            //console.log(this.$refs)
+            this.tagsComp[index].active = !this.tagsComp[index].active;
+            
+            const isActive = this.tagsCates.includes(index);
+            if (isActive) {
+                const tagIndex = this.tagsCates.indexOf(index);
+                this.tagsCates.splice(tagIndex, 1);
+            } else {
+                this.tagsCates.push(index);
+            }
+        },
         initTags(){
-			for (let index = 0; index < this.tagsSites.length; index++) {
-				this.tagsComp.push({tags:this.tagsSites[index],active:false}) 
+			for (let index = 0; index < this.sites.length; index++) {
+				this.tagsComp.push({tags:this.sites[index],active:false}) 
 				
 			}
-			for (let index = 0; index < this.tagsCates.length; index++) {
-				this.tagsComp.push({tags:this.tagsCates[index],active:false}) 
-				
-			}
-			//console.log(this.tagsComp)
+			// console.log(this.tagsCates)
 
-			
 		},
         async sendFav() {
             
@@ -100,8 +116,8 @@ export default {
                 this.objManga.status = null;
             }
             for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index].value)
+                if (this.$refs.lien[index+1].value != "") {
+                    this.objManga.lien.push(this.$refs.lien[index+1].value)
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -140,7 +156,7 @@ export default {
                         this.lienCount = 1;
                         this.$refs.lien.length = this.lienCount;
 
-                        this.$refs.lien[0].value = '';  
+                        this.$refs.lien[1].value = '';  
 
                         for (let index = 0; index < this.tagsComp.length; index++) {
                             this.tagsComp[index].active = false; 
@@ -178,18 +194,12 @@ export default {
                 this.$refs.lien.length = this.lienCount;
 
                 this.$refs.lien[0].value = '';
+                this.myStore.etatModalFav()
             } catch (error) {
                 console.error(this.messageForm,error);
                 
             }
 
-            // if (this.mangaExist(this.objManga.titre) == false) {
-                
-            // }else{
-                
-            // }
-            //this.myStore.etatModalFav();
-            //console.log(this.$refs.lien.length);
         },
         modifFav() {
             
@@ -207,8 +217,8 @@ export default {
             }
             
             for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index].value)
+                if (this.$refs.lien[index+1].value != "") {
+                    this.objManga.lien.push(this.$refs.lien[index+1].value)
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -236,7 +246,7 @@ export default {
             this.$refs.encours.checked = false;
             this.lienCount = 1;
             this.$refs.lien.length = this.lienCount;
-            this.$refs.lien[0].value = '';
+            this.$refs.lien[1].value = '';
             
             for (let index = 0; index < this.tagsComp.length; index++) {
                 
@@ -283,46 +293,83 @@ export default {
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
             this.lienCount = 1;
-            this.$refs.lien.length = this.lienCount;
-            this.$refs.lien[0].value = '';
+            //this.$refs.lien.length = this.lienCount;
+            this.$refs['lien'+1].value = '';
             for (let index = 0; index < this.tagsComp.length; index++) {
                 this.tagsComp[index].active = false; 
                 
             }
         }
     },
+    computed: {
+        getTagActiveStyle() {
+            const color = this.getRandomColor(); // Couleur aléatoire
+            return {
+                color:'red',
+                border:'1px solid red'
+            };
+        },
+        getTagNotStyle() {
+            const color = this.getRandomColor(); // Couleur aléatoire
+            return {
+                color:'black',
+                border:'1px solid black'
+            };
+        }
+    },
     mounted(){
        // this.mangaC.getAllManga();
        this.initTags()
+    //    console.log(this.manga)
     },
     watch:{
+        tagsComp:{
+            deep: true,
+            handler(){
+                for (let index = 0; index < this.tagsComp.length; index++) {
+                    // if (this.tagsComp[index].active == true) {
+                        
+                    //     console.log(this.tagsComp[index].tags ,this.tagsComp[index].active )
+                    // }
+                    
+                }
+            }
+        },
         manga: {
             immediate: true,
             handler() {
                 if (this.manga != null) {
-                    this.$refs.titre.value = this.manga.titre;
-                    this.$refs.commentaire.value = this.manga.commentaire;
-                    this.$refs.imglien.value = this.manga.image;
-                    if (this.manga.status == "En cours") {
-                        this.$refs.encours.checked = true;
-                    } else if (this.manga.status == "Finis") {
-                        this.$refs.finis.checked = true;
-                    } else {
-                        this.$refs.finis.checked = false;
-                        this.$refs.encours.checked = false;
-                    }
+                    setTimeout(() => {
+                        this.$refs.titre.value = this.manga.titre;
+                        this.$refs.commentaire.value = this.manga.commentaire;
+                        this.$refs.imglien.value = this.manga.image;
+                        if (this.manga.status == "En cours") {
+                            this.$refs.encours.checked = true;
+                        } else if (this.manga.status == "Finis") {
+                            this.$refs.finis.checked = true;
+                        } else {
+                            this.$refs.finis.checked = false;
+                            this.$refs.encours.checked = false;
+                        }
 
-                    //this.$refs.lien.length = 0;
-                    
-                    if (this.manga.lien) {
-                        this.lienCount = this.manga.lien.length;
+                        //this.$refs.lien.length = 0;
                         
-                    }else{
-                        this.manga["lien"] = "";
-                    }
+                        if (this.manga.lien) {
+                            this.lienCount = this.manga.lien.length;
+                            this.listlien.length = this.lienCount
+                            for (let index = 0; index < this.lienCount; index++) {
+                                this.listlien[index] = this.manga.lien[index]
+                                
+                            }
+                        }else{
+                            this.manga["lien"] ;
+                            this.listlien.length = this.lienCount;
+                            // this.listlien[0] = ""
+                        }
+                        
+                        console.log(this.manga)
                     
-                    
-                    
+                    }, 10);
                 }
                 
             }

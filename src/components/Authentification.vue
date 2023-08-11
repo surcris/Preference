@@ -32,7 +32,8 @@ export default {
                 email:"",
                 password:"",
             },
-            usercontrol:new UserController()
+            usercontrol:new UserController(),
+            cryptage: new crypt()
         }
     },
     methods:{
@@ -45,7 +46,7 @@ export default {
                         // Connexion réussie, récupérer l'utilisateur connecté
                         const user = userCredential.user;
                         console.log('Utilisateur connecté ');
-                        const uidCrypt = crypt.encryptData(user.uid);
+                        const uidCrypt = this.cryptage.encryptData(user.uid);
                         sessionStorage.setItem("akey", uidCrypt)
                         this.myStore.updateVariable(2);
 
