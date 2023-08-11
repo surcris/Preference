@@ -5,10 +5,11 @@
                 <input type="text" name="email"  class="form-control  my-2"  placeholder="Email" v-model="infoConnexion.email">
                 <input type="password" name="mdp" class="form-control  my-2"  placeholder="Mot de passe" v-model="infoConnexion.password">
             </div>
+            <!--
             <div class="form-check">
                 <input type="checkbox" name="" id="">
                 <label for="scales">Se souvenir de moi</label>
-            </div>
+            </div>-->
             
             <div class="form-submit">
                 <button  type="submit" class="btn btn-primary my-2">Valider</button>
@@ -33,7 +34,7 @@ export default {
                 password:"",
             },
             usercontrol:new UserController(),
-            cryptage: new crypt()
+            cryptage:new crypt()
         }
     },
     methods:{
@@ -154,6 +155,19 @@ form{
 
 .form-line{
     border-bottom: #fff solid 1px;
+}
+
+@media (max-width: 450px) {
+    .container-formco{
+        width: 100%;
+        height: calc(90vh - 50px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    form{
+        width: 90%;
+    }
 }
 
 </style>

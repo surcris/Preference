@@ -1,57 +1,3 @@
-<template>
-	<div class="container-modalFav">
-		<div class="modalFav">
-            <div @click="closeModal()" class="cross">X</div>
-            <div class="modalFav-contenu">
-                <label for="">Titre</label>
-                <input class="titre" ref="titre" type="text" >
-                <fieldset>
-                    <legend >Status</legend>
-                    <div>
-                        <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
-                        <label for="scales">Finis</label>
-                    </div>
-                    <div>
-                        <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
-                        <label for="En cours">En cours</label>
-                    </div>
-                </fieldset>
-                <div class="div-buttonAdd">
-                    <label for="">Lien :</label>
-                    <button class="addLien" @click="addLien()">+</button>
-                    <button class="suppLien" @click="suppLien()">-</button>
-                </div>
-                <div class="mylink">
-                    <input class="lien" type="text" v-for="count in lienCount" :key="count" :ref="'lien'+count"
-                    :value="listlien[count-1]">
-                </div>
-                <div class="mytags">
-                    <label for="">Tags :</label>
-                    <div class="container-tags">
-                        <p v-if="manga==null" v-for="(tag,index) in sites" @click="activeTags(index)" :ref="'tags'+index"
-                        :style="{ color: tagsCates.includes(index) ? 'red' : 'black',
-                            border: tagsCates.includes(index) ? '1px solid red' : '1px solid black' }"> 
-                        {{ tag }}</p>
-                        <p v-if="manga" @click="activeTags(index)" :ref="'tags'+index" v-for="(tag,index) in sites" 
-                        :style="{ color: tagsCates.includes(index) ? 'red' : 'black',
-                            border: tagsCates.includes(index) ? '1px solid red' : '1px solid black' }"
-                            :value="manga.lien[index-1]"> 
-                        {{ tag }}</p>
-                        
-                    </div>
-                </div>
-                <label for="">Commentaire</label>
-                <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
-                <label for="avatar">Choisir une image:</label>
-                <input ref="imglien" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
-            </div>
-            <div class="validation">
-                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
-                <p>{{messageForm}}</p>
-            </div>
-        </div>
-	</div>
-</template>
 
 <script>
 import { useMyStore } from '../../stores/store';
@@ -72,38 +18,42 @@ export default {
                 image: null,
             },
             messageForm:null,
-            lienCount:1,
+            lienCount:[
+                {
+                    lien:''
+                }
+            ],
             userC: new UserController(),
-            sites: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga",
-                "Romance", "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era"],
-			tagsCates: [],
+			tagsCates: ["Toonily", "1stkissmanga", "Aquamanga", "MangaTx","Zinmanga","Romance",
+             "Action", "Réincarnation", "Return Time","Modern","Médiévale","Cultivation","Asian era","Villainess","Revenge","System"],
             tagsComp:[],
-            listlien:[]
+
         }
     },
     methods:{
-        activeTags(index){
-            //console.log(this.$refs)
+        isTagSelected(index) {
+            console.log(this.$refs)
             this.tagsComp[index].active = !this.tagsComp[index].active;
-            
-            const isActive = this.tagsCates.includes(index);
-            if (isActive) {
-                const tagIndex = this.tagsCates.indexOf(index);
-                this.tagsCates.splice(tagIndex, 1);
-            } else {
-                this.tagsCates.push(index);
+            if (this.tagsComp[index].active) {
+                this.$refs['btn-'+index][0].className = "btn-active"
+                this.$refs['p-'+index][0].className = "p-active"
+            }else{
+                this.$refs['btn-'+index][0].className = "btn-notActive"
+                this.$refs['p-'+index][0].className = "p-notActive"
             }
+            
+
         },
-        initTags(){
-			for (let index = 0; index < this.sites.length; index++) {
-				this.tagsComp.push({tags:this.sites[index],active:false}) 
+        initTagTab(){
+			for (let index = 0; index < this.tagsCates.length; index++) {
+				this.tagsComp.push({tags:this.tagsCates[index],active:false}) 
 				
 			}
-			// console.log(this.tagsCates)
-
+			//console.log(this.tagsComp)
 		},
         async sendFav() {
-            
+            console.log(this.$refs)
+            // console.log(this.lienCount)
             this.objManga.titre = this.$refs.titre.value;
             this.objManga.commentaire = this.$refs.commentaire.value;
             this.objManga.image = this.$refs.imglien.value;
@@ -115,9 +65,12 @@ export default {
             } else {
                 this.objManga.status = null;
             }
-            for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index+1].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index+1].value)
+            for (let index = 0; index < this.lienCount.length; index++) {
+                
+                if (this.lienCount[index].lien != "") {
+                    
+                    this.objManga.lien.push(this.lienCount[index].lien)
+                    console.log(this.objManga.lien);
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -125,14 +78,14 @@ export default {
                     this.objManga.tags.push(this.tagsComp[index].tags)
                 }
             }
-           
+            // console.log(this.objManga.lien);
             try {
                 if (navigator.onLine == true) {
                     //console.log("1");
                     const snapshot = await this.mangaC.getOneManga(this.objManga.titre);
                     const data = snapshot.val();
                     const user = this.userC.getAuthUser().currentUser;
-                    console.log(user);
+                    // console.log(data);
                     //this.userC.maintainUser()
                     if (data == null && user != null) {
                         //console.log("2");
@@ -153,15 +106,18 @@ export default {
                         this.$refs.imglien.value = '';
                         this.$refs.finis.checked = false;
                         this.$refs.encours.checked = false;
-                        this.lienCount = 1;
-                        this.$refs.lien.length = this.lienCount;
-
-                        this.$refs.lien[1].value = '';  
-
+                          
+                        for (let index = 0; index < this.lienCount.length; index++) {
+                            
+                            this.$refs['lien'+index].value = '';
+                        }
+                        this.lienCount.length = 1;
+                        
                         for (let index = 0; index < this.tagsComp.length; index++) {
                             this.tagsComp[index].active = false; 
                             
                         }
+                        this.myStore.etatModalFav();
                     }else{
                         if (data!=null) {
                             this.messageForm = "Titre déjà enregistrer"
@@ -176,25 +132,7 @@ export default {
                     this.messageForm = "Vous n'etes pas connecter a internet !!!"
                 }
 
-                //Réinitialisation des valeurs de objManga
-                this.objManga.titre = null;
-                this.objManga.commentaire = null;
-                this.objManga.image = null;
-                this.objManga.status = null;
-                this.objManga.lien.length = 0;
                 
-
-                //Réinitialisation des valeurs des inputs
-                this.$refs.titre.value = '';
-                this.$refs.commentaire.value = '';
-                this.$refs.imglien.value = '';
-                this.$refs.finis.checked = false;
-                this.$refs.encours.checked = false;
-                this.lienCount = 1;
-                this.$refs.lien.length = this.lienCount;
-
-                this.$refs.lien[0].value = '';
-                this.myStore.etatModalFav()
             } catch (error) {
                 console.error(this.messageForm,error);
                 
@@ -216,9 +154,9 @@ export default {
                 this.objManga.status = null;
             }
             
-            for (let index = 0; index < this.lienCount; index++) {
-                if (this.$refs.lien[index+1].value != "") {
-                    this.objManga.lien.push(this.$refs.lien[index+1].value)
+            for (let index = 0; index < this.lienCount.length; index++) {
+                if (this.lienCount[index].lien != "") {
+                    this.objManga.lien.push(this.lienCount[index].lien)
                 }
             }
             for (let index = 0; index < this.tagsComp.length; index++) {
@@ -226,7 +164,8 @@ export default {
                     this.objManga.tags.push(this.tagsComp[index].tags)
                 }
             }
-            //console.log(this.objManga);
+            // console.log(this.objManga.lien);
+            this.mangaC.suppMangaTags(this.objManga.titre);
             this.mangaC.updateManga(this.objManga);
             
 
@@ -235,6 +174,7 @@ export default {
             this.objManga.commentaire = null;
             this.objManga.image = null;
             this.objManga.status = null;
+            this.objManga.tags = [];
             this.objManga.lien.length = 0;
             
 
@@ -244,17 +184,18 @@ export default {
             this.$refs.imglien.value = '';
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
-            this.lienCount = 1;
-            this.$refs.lien.length = this.lienCount;
-            this.$refs.lien[1].value = '';
+            for (let index = 0; index < this.lienCount.length; index++) {
+                this.$refs['lien' + index].value = '';
+            }
+            this.lienCount.length = 1;
             
             for (let index = 0; index < this.tagsComp.length; index++) {
                 
                 this.tagsComp[index].active = false; 
                 
             }
-            // //console.log(this.$refs.lien.length);
-            this.myStore.etatModalFav()
+            
+            this.myStore.etatModalFav();
         },
         async mangaExist(titre) {
             try {
@@ -274,13 +215,15 @@ export default {
             }
         },
         addLien(){
-            this.lienCount++; 
+            this.lienCount.push({lien:''}); 
+            console.log(this.lienCount)
         },
         suppLien(){
-            if (this.lienCount > 1) {
-                this.lienCount--;
+            if (this.lienCount.length > 1) {
+                this.lienCount.pop();
+                console.log(this.lienCount)
             }
-            
+            console.log(this.lienCount)
         },
         closeModal(){
             this.myStore.etatModalFav();
@@ -292,35 +235,30 @@ export default {
             this.$refs.imglien.value = '';
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
-            this.lienCount = 1;
-            //this.$refs.lien.length = this.lienCount;
-            this.$refs['lien'+1].value = '';
+            this.lienCount.length = 1;
+            this.$refs.lien.length = this.lienCount;
+            this.$refs.lien[0].value = '';
             for (let index = 0; index < this.tagsComp.length; index++) {
                 this.tagsComp[index].active = false; 
                 
             }
-        }
-    },
-    computed: {
-        getTagActiveStyle() {
-            const color = this.getRandomColor(); // Couleur aléatoire
-            return {
-                color:'red',
-                border:'1px solid red'
-            };
-        },
-        getTagNotStyle() {
-            const color = this.getRandomColor(); // Couleur aléatoire
-            return {
-                color:'black',
-                border:'1px solid black'
-            };
+            for (let index = 0; index < this.tagsComp.length; index++) {
+                this.$refs['btn-' + index][0].className = "btn-notActive"
+
+            }
         }
     },
     mounted(){
-       // this.mangaC.getAllManga();
-       this.initTags()
-    //    console.log(this.manga)
+       
+       this.initTagTab()
+    },
+    computed: {
+        classClick() {
+            return {
+                color: 'red',
+                border: '1px solid red'
+            };
+        }
     },
     watch:{
         tagsComp:{
@@ -351,26 +289,46 @@ export default {
                             this.$refs.finis.checked = false;
                             this.$refs.encours.checked = false;
                         }
-
-                        //this.$refs.lien.length = 0;
+                       
+                        this.lienCount.pop()
                         
                         if (this.manga.lien) {
-                            this.lienCount = this.manga.lien.length;
-                            this.listlien.length = this.lienCount
-                            for (let index = 0; index < this.lienCount; index++) {
-                                this.listlien[index] = this.manga.lien[index]
+                            
+                            for (let index = 0; index < this.manga.lien.length; index++) {
+                                this.lienCount.push({lien:this.manga.lien[index]}); 
                                 
                             }
-                        }else{
-                            this.manga["lien"] ;
-                            this.listlien.length = this.lienCount;
-                            // this.listlien[0] = ""
+                            console.log(this.lienCount)
+
+                        } else {
+                            this.manga["lien"] = "";
                         }
                         
-                        console.log(this.manga)
-                    
+                        for (let index = 0; index < this.tagsComp.length; index++) {
+                            this.$refs['btn-' + index][0].className = "btn-notActive"
+
+                        }
+                        if (this.manga.tags) {
+                            for (let i = 0; i < this.manga.tags.length; i++) {
+
+                                for (let j = 0; j < this.tagsComp.length; j++) {
+
+                                    if (this.manga.tags[i] === this.$refs['btn-' + j][0].textContent) {
+                                        this.$refs['btn-' + j][0].className = "btn-active";
+                                        this.tagsComp[j].active = true;
+
+                                    }
+
+                                }
+
+                            }
+                        }
+                        // console.log(this.tagsComp)
+                        
+                        // console.log(this.manga)
                     }, 10);
                 }
+                
                 
             }
         }
@@ -378,6 +336,106 @@ export default {
 }
 
 </script>
+
+<template>
+	<div class="container-modalFav">
+		<div class="modalFav">
+            <div @click="closeModal()" class="cross">X</div>
+            <div class="modalFav-contenu">
+                <label for="">Titre</label>
+                <input class="titre" ref="titre" type="text" >
+                <fieldset>
+                    <legend >Status</legend>
+                    <div>
+                        <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
+                        <label for="scales">Finis</label>
+                    </div>
+                    <div>
+                        <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
+                        <label for="En cours">En cours</label>
+                    </div>
+                </fieldset>
+                <div class="div-buttonAdd">
+                    <label for="">Lien :</label>
+                    <button class="addLien" @click="addLien()">+</button>
+                    <button class="suppLien" @click="suppLien()">-</button>
+                </div>
+                <div v-for="(count,index) in lienCount" :key="index">
+                    <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
+                    >
+                </div>
+                <div>
+                    <label for="">Tags :</label>
+                    <div class="container-tags">
+                        <button v-for="(tag,index) in tagsCates" :ref="'btn-'+index" @click="isTagSelected(index)" > 
+                        {{ tag }}
+                        </button>
+                    </div>
+                </div>
+                <label for="">Commentaire</label>
+                <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
+                <label for="avatar">Choisir une image:</label>
+                <input ref="imglien" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+            </div>
+            <div class="validation">
+                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
+                <p>{{messageForm}}</p>
+            </div>
+        </div>
+	</div>
+    <div class="container-mobile-modalFav">
+        <div @click="myStore.btnAccueil()" class="cross">X</div>
+        <h3>Ajouter un Manga</h3>
+        <div class="content-mobile-modalFav">
+            <label for="">Titre</label>
+            <input class="titre" ref="titre" type="text" placeholder="Titre">
+            <div class="container-fieldset">
+                <fieldset>
+                    <legend >Status</legend>
+                    <div class="content-checkbox">
+                        <div >
+                            <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
+                            <label for="scales">Finis</label>
+                        </div>
+                        <div>
+                            <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
+                            <label for="En cours">En cours</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="div-buttonAdd">
+                <div>
+                    <label for="">Lien :</label>
+                    <i class="fa-solid fa-circle-plus" @click="addLien()"></i>
+                    <i class="fa-solid fa-circle-minus" @click="suppLien()"></i>
+                    <!--
+                        <button class="addLien" @click="addLien()">+</button>
+                    <button class="suppLien" @click="suppLien()">-</button>
+                    -->
+                    
+                </div>
+                <div v-for="(count,index) in lienCount" :key="index">
+                    <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
+                    >
+                </div>
+            </div>
+            
+            <div>
+                <label for="">Tags :</label>
+                <div class="container-tags">
+                    <p v-for="(tag,index) in tagsCates" class="p-basic" :ref="'p-'+index" @click="isTagSelected(index)" > 
+                    {{ tag }}
+                    </p>
+                </div>
+            </div>
+            <div class="validation">
+                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
+                <p>{{messageForm}}</p>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="css">
 .container-modalFav{
@@ -463,7 +521,7 @@ export default {
     background-color: rgb(255, 0, 0);
     border: solid black 2px;
 }
-.lien{
+[class*="lien"]{
     margin-bottom: 2px;
     height: 30px;
     width: 100%;
@@ -477,13 +535,24 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
 }
-.container-tags p{
+.container-tags button{
     margin:  2px;
-    border: 1px solid black;
     padding: 0 5px;
     border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
+}
+.container-tags button:active{
+    border-color: red;
+    color: red;
+}
+.btn-active{
+    border-color: red;
+    color: red;
+}
+.btn-notActive{
+    border-color: black;
+    color: black;
 }
 textarea{
     resize: none;
@@ -511,5 +580,153 @@ textarea{
     font-size: 18px;
     font-weight: 700;
     color: rgb(250, 0, 0);
+}
+.container-mobile-modalFav{
+    display: none;
+    
+}
+@media (max-width: 450px) {
+    .container-modalFav{
+        display: none;
+    }
+    .container-mobile-modalFav{
+        display: block;
+        position: absolute;
+        z-index: 0;
+        top: 55px;
+        height: fit-content;
+        width: 90vw;
+        margin: 0 5vw;
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        border-radius: 5px;
+        
+    }
+    .content-mobile-modalFav{
+        padding-top: 10px;
+        width: 95%;
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+    }
+    h3{
+        margin-left: 5px;
+        font-size: 25px;
+    }
+    .content-mobile-modalFav .titre{
+        
+        height: 35px;
+        font-size: 20px;
+        font-weight: 500;
+        border: 1px solid rgb(37, 37, 121);;
+        border-radius: 5px;
+
+    }
+    .content-mobile-modalFav .titre:focus{
+        outline: none;
+        
+    }
+    label{
+        font-weight: 600;
+    }
+    .content-checkbox{
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
+    }
+    .content-checkbox div{
+        margin: 5px ;
+        
+    }
+    .content-checkbox label{
+        font-size: 18px;
+        margin-left: 2px;
+    }
+    .div-buttonAdd{
+        display: flex;
+        flex-direction: column;
+    }
+    .div-buttonAdd div:nth-child(1){
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 5px;
+
+    }
+    label{
+        font-size: 20px; 
+    }
+    .container-fieldset{
+        padding: 10px 0;
+    }
+    
+    .div-buttonAdd div:nth-child(1) i{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(37, 37, 121);
+        font-size: 20px;
+        margin-left: 5px;
+    }
+    [class*="lien"]{
+        border: 1px solid rgb(37, 37, 121);
+        height: 35px;
+    }
+    .container-tags{
+        color: rgb(37, 37, 121);
+    }
+    .container-tags .p-basic{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid rgb(37, 37, 121);
+        color: rgb(37, 37, 121);
+        
+    }
+    /* .container-tags p:active{
+        border-color: red;
+        color: red;
+    } */
+    .p-active{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid red;
+        color: red;
+    }
+    .p-notActive{
+        margin:  2px;
+        padding: 0 5px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid rgb(37, 37, 121);
+        color: rgb(37, 37, 121);
+    }
+    .validation{
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn-valide{
+        margin: 0;
+        width: 70%;
+        font-size: 18px;
+        font-weight: 700;
+        background-color: rgb(255, 255, 255);
+        border: solid rgb(37, 37, 121) 1px;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
 }
 </style>

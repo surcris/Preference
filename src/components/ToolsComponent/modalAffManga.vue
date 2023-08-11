@@ -77,7 +77,7 @@ export default {
 .modalAffFav-contenu{
     display: flex;
     flex-direction: column;
-    padding: 10px 20px ;
+    margin: 10px 20px ;
 }
 .modalAffFav-contenu label , legend{
     font-weight: 1000;
@@ -124,5 +124,22 @@ button{
     border: solid black 2px;
     border-radius: 5px;
     text-align: center;
+}
+@media (max-width: 450px) {
+    .modalAffFav{
+        height: fit-content;
+        width: 90%;
+        background-color: aliceblue;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        
+    }
+    a{
+        display: inline-block;
+        word-wrap: break-word;
+        max-width: 80vw;
+    }
 }
 </style>

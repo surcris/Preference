@@ -6,7 +6,7 @@
                     <h1>To-Do List</h1>
                     <i class="fa-solid fa-list-check"></i>
                 </div>
-                <div @click="myStore.etatmodeTodo()" class="container-close">
+                <div @click="myStore.etatmodeTodo();myStore.etatBtnHome()" class="container-close">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
             </div>
@@ -356,19 +356,19 @@ export default{
     color: rgb(107, 1, 1);
 }
 .container-list-task{
-    height: 80%;
+    height: 85%;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .barre-Add-todo{
     box-sizing: border-box;
     width: 100%;
-    height: 60px;
+    height: 40px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    height: 10%;
+    
     background-color: rgb(219, 219, 219);
     border-radius: 50px;
 }
@@ -488,13 +488,43 @@ export default{
     
 }
 
-@media (max-width: 1550px){
+@media (max-width: 1550px ) {
     .container-todo{
         position: fixed;
         height: 60vh;
         width: 50vh;
         top: 100px;
         left: 40px;
+        z-index: 2;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        padding: 0 10px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 450px) {
+    .page-todo{
+        position: fixed;
+        height: 80vh;
+        width: 100vw;
+        top: 55px;
+        left: 0;
+        
+        overflow: auto;
+        
+       
+        display: flex;
+        
+        justify-content: center;
+        align-items: center;
+    }
+    .container-todo{
+        position: fixed;
+        height: 80vh;
+        width: 100vw;
+        top: 55px;
+        left: 0;
         z-index: 2;
         background-color: rgb(255, 255, 255);
         border-radius: 10px;

@@ -6,16 +6,23 @@ export const useMyStore = defineStore('myStore', {
   state: () => ({
     modeHeaderStore: 1,
     modeModalFav:false,
+    modeMenu:false,
     modalShowFav:false,
     modeSend:true,
     btnSearch:false,
     modeTodo:false,
     sousTask:false,
     actionBdd:true,
+    etathome:true,
+    storeManga:[],
   }),
   actions: {
     updateVariable(newValue) {
       this.modeHeaderStore = newValue;
+    },
+    etatBtnHome() {
+      this.etathome = !this.etathome;
+      //console.log(this.modeModalFav)
     },
     etatModalFav() {
       this.modeModalFav = !this.modeModalFav;
@@ -41,5 +48,26 @@ export const useMyStore = defineStore('myStore', {
       this.actionBdd = !this.actionBdd;
       //console.log(this.actionBdd)
     },
+    btnMenu() {
+      this.modeMenu = !this.modeMenu;
+      // console.log(this.modeMenu)
+    },
+    btnAccueil(){
+			this.modeMenu = false;
+      this.etathome = true;
+
+      this.modeModalFav = false;
+      this.modalShowFav = false;
+      this.modeTodo = false;
+      //this.modalShowFav = false;
+			
+		},
+    btnAjoutManga(){
+			this.etatModalFav();
+			this.modeMenu = false;
+			this.etathome = true;
+			this.modeTodo = false;
+			
+		}
   },
 });
