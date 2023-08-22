@@ -1,4 +1,5 @@
 <template>
+
     <div class="container-formco">
         <form @submit.prevent="connectUser()">
             <div class="form-input" >
@@ -30,8 +31,8 @@ export default {
         return{
             myStore: useMyStore(),
             infoConnexion:{
-                email:"",
-                password:"",
+                email:"toto@gmail.com",
+                password:"1234567",
             },
             usercontrol:new UserController(),
             cryptage:new crypt()
