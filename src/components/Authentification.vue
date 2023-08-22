@@ -97,7 +97,8 @@ export default {
     justify-content: center;
 }
 form{
-    width: 20%;
+    width: 400px;
+    min-width: 200px;
 }
 .form-input{
     display: flex;
