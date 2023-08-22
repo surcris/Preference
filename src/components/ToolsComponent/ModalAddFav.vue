@@ -55,8 +55,8 @@ export default {
             console.log(this.$refs)
             // console.log(this.lienCount)
             this.objManga.titre = this.$refs.titre.value;
-            this.objManga.commentaire = this.$refs.commentaire.value;
-            this.objManga.image = this.$refs.imglien.value;
+            // this.objManga.commentaire = "";
+            this.objManga.image = "";
 
             if (this.$refs.finis.checked) {
                 this.objManga.status = this.$refs.finis.value;
@@ -102,8 +102,8 @@ export default {
 
                         //Réinitialisation des valeurs des inputs
                         this.$refs.titre.value = '';
-                        this.$refs.commentaire.value = '';
-                        this.$refs.imglien.value = '';
+                        // this.$refs.commentaire.value = '';
+                        // this.$refs.imglien.value = '';
                         this.$refs.finis.checked = false;
                         this.$refs.encours.checked = false;
                           
@@ -143,7 +143,7 @@ export default {
             
             // //console.log(this.$refs.finis)
             this.objManga.titre = this.$refs.titre.value;
-            this.objManga.commentaire = this.$refs.commentaire.value;
+            this.objManga.commentaire = "";
             this.objManga.image = this.$refs.imglien.value;
 
             if (this.$refs.finis.checked) {
@@ -231,8 +231,8 @@ export default {
             this.messageForm = null;
             //Réinitialisation des valeurs des inputs
             this.$refs.titre.value = '';
-            this.$refs.commentaire.value = '';
-            this.$refs.imglien.value = '';
+            // this.$refs.commentaire.value = '';
+            // this.$refs.imglien.value = '';
             this.$refs.finis.checked = false;
             this.$refs.encours.checked = false;
             this.lienCount.length = 1;
@@ -279,8 +279,8 @@ export default {
                 if (this.manga != null) {
                     setTimeout(() => {
                         this.$refs.titre.value = this.manga.titre;
-                        this.$refs.commentaire.value = this.manga.commentaire;
-                        this.$refs.imglien.value = this.manga.image;
+                        this.$refs.commentaire.value = "";
+                        this.$refs.imglien.value = "";
                         if (this.manga.status == "En cours") {
                             this.$refs.encours.checked = true;
                         } else if (this.manga.status == "Finis") {
@@ -343,22 +343,31 @@ export default {
             <div @click="closeModal()" class="cross">X</div>
             <div class="modalFav-contenu">
                 <label for="">Titre</label>
-                <input class="titre" ref="titre" type="text" >
+                <input class="titre" ref="titre" type="text" placeholder="Titre">
                 <fieldset>
                     <legend >Status</legend>
-                    <div>
-                        <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
-                        <label for="scales">Finis</label>
-                    </div>
-                    <div>
-                        <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
-                        <label for="En cours">En cours</label>
+                    <div class="content-checkbox">
+                        <div >
+                            <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
+                            <label for="scales">Finis</label>
+                        </div>
+                        <div>
+                            <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
+                            <label for="En cours">En cours</label>
+                        </div>
                     </div>
                 </fieldset>
                 <div class="div-buttonAdd">
-                    <label for="">Lien :</label>
-                    <button class="addLien" @click="addLien()">+</button>
-                    <button class="suppLien" @click="suppLien()">-</button>
+                    <div>
+                        <label for="">Lien :</label>
+                        <i class="fa-solid fa-circle-plus" @click="addLien()"></i>
+                        <i class="fa-solid fa-circle-minus" @click="suppLien()"></i>
+                        <!--
+                            <button class="addLien" @click="addLien()">+</button>
+                        <button class="suppLien" @click="suppLien()">-</button>
+                        -->
+                        
+                    </div>
                 </div>
                 <div v-for="(count,index) in lienCount" :key="index">
                     <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
@@ -367,15 +376,12 @@ export default {
                 <div>
                     <label for="">Tags :</label>
                     <div class="container-tags">
-                        <button v-for="(tag,index) in tagsCates" :ref="'btn-'+index" @click="isTagSelected(index)" > 
+                        <button v-for="(tag,index) in tagsCates" class="p-basic" :ref="'btn-'+index" @click="isTagSelected(index)" > 
                         {{ tag }}
                         </button>
                     </div>
                 </div>
-                <label for="">Commentaire</label>
-                <textarea ref="commentaire" name="" id="" cols="30" rows="10" ></textarea>
-                <label for="avatar">Choisir une image:</label>
-                <input ref="imglien" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+               
             </div>
             <div class="validation">
                 <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
@@ -456,12 +462,22 @@ export default {
 .modalFav{
     height: fit-content;
     width: 35%;
+    min-width: 400px;
     background-color: aliceblue;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     
+}
+.container-modalFav .titre{
+    
+    height: 35px;
+    font-size: 20px;
+    font-weight: 500;
+    border: 1px solid rgb(37, 37, 121);;
+    border-radius: 5px;
+
 }
 .modalFav-contenu{
     display: flex;
@@ -471,6 +487,21 @@ export default {
 .modalFav-contenu label , legend{
     font-weight: 1000;
     font-size: 22px;
+}
+.content-checkbox{
+        
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+}
+.content-checkbox div{
+    margin: 5px ;
+    
+}
+.content-checkbox label{
+    font-size: 18px;
+    margin-left: 2px;
 }
 .modalFav-contenu div label{
     font-weight: 1000;
@@ -498,10 +529,25 @@ export default {
     margin-top: 2px;
 }
 .div-buttonAdd{
-    padding: 10px 0;
     display: flex;
+    flex-direction: column;
 }
-.div-buttonAdd button{
+.div-buttonAdd div:nth-child(1){
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 5px;
+
+}
+.div-buttonAdd div:nth-child(1) i{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(37, 37, 121);
+    font-size: 20px;
+    margin-left: 5px;
+}
+/* .div-buttonAdd button{
     
     margin-left: 10px;
     font-family: 'Kodchasan';
@@ -511,6 +557,8 @@ export default {
     border-radius: 5px;
     display: flex;
     padding: 0 3px 3px 3px;
+
+
 }
 .div-buttonAdd .addLien{
     background-color: rgb(0, 255, 34);
@@ -519,13 +567,13 @@ export default {
 }
 .div-buttonAdd .suppLien{
     background-color: rgb(255, 0, 0);
-    border: solid black 2px;
-}
+    border: solid rgb(37, 37, 121) 1px;
+} */
 [class*="lien"]{
     margin-bottom: 2px;
     height: 30px;
     width: 100%;
-    border: solid black 2px;
+    border: solid rgb(37, 37, 121) 1px;
     border-radius: 5px;
     font-size: 20px;
     
@@ -534,25 +582,42 @@ export default {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    
 }
+
+
 .container-tags button{
     margin:  2px;
     padding: 0 5px;
     border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
+    /* border: 1px solid rgb(37, 37, 121); */
+    /* color: rgb(37, 37, 121); */
+    
 }
 .container-tags button:active{
-    border-color: red;
+    border: 1px solid red;
     color: red;
+    
+}
+.container-tags .p-basic{
+    margin:  2px;
+    padding: 0 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border: 1px solid rgb(37, 37, 121);
+    color: rgb(37, 37, 121);
+    
 }
 .btn-active{
-    border-color: red;
+    border: 1px solid red;
     color: red;
 }
 .btn-notActive{
-    border-color: black;
-    color: black;
+    border: 1px solid rgb(37, 37, 121);
+    color: rgb(37, 37, 121);
 }
 textarea{
     resize: none;

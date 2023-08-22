@@ -67,6 +67,7 @@ export default {
 .modalAffFav{
     height: fit-content;
     width: 35%;
+    min-width: 300px;
     background-color: aliceblue;
     border-radius: 5px;
     display: flex;
@@ -86,6 +87,12 @@ export default {
 .modalAffFav-contenu div label{
     font-weight: 500;
     font-size: 20px;
+}
+a{
+    display: inline-block;
+    word-wrap: break-word;
+    width: 35%;
+    min-width: 100%;
 }
 .cross{
     display: flex;
@@ -134,12 +141,13 @@ button{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        
+        min-width: 100px;
     }
     a{
         display: inline-block;
         word-wrap: break-word;
         max-width: 80vw;
+        min-width: 100%;
     }
 }
 </style>

@@ -10,9 +10,12 @@
         <div class="header-accueil" v-if="modeHeader == 2">
             <router-link :to="{ name: 'accueil' }">Accueil</router-link>
         </div>
-        <div class="header-profil" v-if="modeHeader == 2">
-            <router-link :to="{ name: 'profil' }">Profil</router-link>
+        <div @click="myStore.btnAjoutManga" v-if="modeHeader == 2" class="header-Ajout" >
+            <p>Ajout Manga</p>
         </div>
+        <!-- <div class="header-profil" v-if="modeHeader == 2">
+            <router-link :to="{ name: 'profil' }">Profil</router-link>
+        </div> -->
         <div class="header-auth" v-if="modeHeader == 1">
             <router-link :to="{ name: 'authentification' }">Connexion</router-link>
         </div>

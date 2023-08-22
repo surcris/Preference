@@ -382,6 +382,7 @@ export default {
 
 <style scoped >
 .home-container{
+	
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
@@ -490,9 +491,11 @@ export default {
 	cursor: pointer;
 }
 .main-content{
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
+	max-width: 100vw;
+	gap: 5px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+	justify-items: center;
 }
 .fav-background{
 	border: aliceblue solid 1px;
@@ -501,19 +504,21 @@ export default {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
-	margin: 20px;
+	padding: 0;
+	/* margin: 20px; */
 	border-radius: 5px;
 	background-color: rgb(198, 212, 224);
 	cursor: pointer;
 	position: relative;
 }
+
 .container-newCard {
 	border: aliceblue solid 1px;
 	width: 200px;
 	height: 300px;
 	display: flex;
 	flex-direction: column;
-	margin: 20px;
+	/* margin: 20px; */
 	border-radius: 5px;
 	background-color: rgb(198, 212, 224);
 	cursor: pointer;
@@ -588,10 +593,11 @@ p{
 
 @media (max-width: 450px)  {
 	.main-content{
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		width: 100%;
+		max-width: 100vw;
+		gap: 5px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit,minmax(100px,1fr));
+		justify-items: center;
 	}
 	.header-tag{
 		display: flex;
@@ -617,7 +623,7 @@ p{
 	}
 	
 	[class*="container-FavCard"]{
-		width: 33%;
+		width: 100%;
 		height: fit-content;
 		padding: 5px;
 		
