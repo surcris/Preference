@@ -93,8 +93,8 @@ export default {
 
                 arrayFull = myArray.filter(manga => manga.titre.toLowerCase().includes(this.valInput));
                 this.myStore.storeMangaSearch = arrayFull;
-                console.log(arrayFull)
-                console.log(this.filteredResults)
+                // console.log(arrayFull)
+                // console.log(this.filteredResults)
                 return this.filteredResults;
             }else{
                 this.myStore.storeMangaSearch = "";
@@ -116,17 +116,25 @@ export default {
         }
     },
     watch:{
+        valInput: {
+            deep: true,
+            handler() {
+                this.searchResults;
+            }
+            
+        },
+
         'myStore.modeHeaderStore':function () {
             this.modeHeader = this.myStore.modeHeaderStore;
         },
-        filteredResults:{
-            immediate: true,
-            handler() {
-                console.log(this.$refs)
+        // filteredResults:{
+        //     immediate: true,
+        //     handler() {
+        //         // console.log(this.$refs)
 
-                //this.$emit("getFiltre",this.filteredResults)
-            }
-        }
+        //         //this.$emit("getFiltre",this.filteredResults)
+        //     }
+        // }
     }
 }
 </script>

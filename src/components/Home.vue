@@ -340,6 +340,8 @@ export default {
 						this.$refs[key][0].style.display = "flex";
 					}
 				} else {
+
+					
 					this.messageFiltre = this.myStore.storeMangaSearch.length + " résultat"
 					for (const key in this.$refs) {
 						for (let index = 0; index < this.myStore.storeMangaSearch.length; index++) {
@@ -372,7 +374,7 @@ export default {
 							l_cate.push(tag.tags);
 							//console.log("Tags sélectionner : ",l_cate);
 						}
-						this.getEmitFiltre();
+						// this.getEmitFiltre();
 					}
 				}
 				if (l_cate.length == 0) {
