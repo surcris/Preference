@@ -533,13 +533,15 @@ textarea{
 
    
 .container-mobile-modalFav{
-    display: block;
+    
     position: fixed;
     z-index: 0;
     top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
     height: fit-content;
-    width: 90vw;
-    margin: 0 5vw;
+
+    width: 400px;
     background-color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
@@ -547,6 +549,28 @@ textarea{
     border-radius: 5px;
     
 }
+@media (max-width: 450px) {
+    .container-mobile-modalFav{
+    
+    position: fixed;
+    z-index: 0;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: fit-content;
+
+    width: 90vw;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-radius: 5px;
+    
+}
+
+}
+
+
 .content-mobile-modalFav{
     padding-top: 10px;
     width: 95%;
