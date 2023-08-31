@@ -7,21 +7,21 @@
         <div v-if="myStore.etathome && myStore.modeModalFav == false" @click="myStore.etatbtnSearch" class="icon-search">
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
-        <div class="header-accueil" v-if="modeHeader == 2">
+        <!-- <div class="header-accueil" v-if="modeHeader == 2">
             <router-link :to="{ name: 'accueil' }">Accueil</router-link>
         </div>
         <div @click="myStore.btnAjoutManga" v-if="modeHeader == 2" class="header-Ajout" >
             <p>Ajout Manga</p>
         </div>
-        <!-- <div class="header-profil" v-if="modeHeader == 2">
+        <div class="header-profil" v-if="modeHeader == 2">
             <router-link :to="{ name: 'profil' }">Profil</router-link>
-        </div> -->
+        </div> 
         <div class="header-auth" v-if="modeHeader == 1">
             <router-link :to="{ name: 'authentification' }">Connexion</router-link>
         </div>
         <div @click="deconnect()" class="header-deco" v-if="modeHeader == 2">
             <p>Déconnexion</p>
-        </div>
+        </div>-->
         <!--
         
         -->
@@ -229,7 +229,7 @@ a,p{
     color: #ffffff;
 
 }
-@media (max-width: 450px) {
+/* @media (max-width: 450px) { */
     header [class*='header']{
         display: none;
     }
@@ -273,5 +273,5 @@ a,p{
 
     }
     
-}
+/* } */
 </style>

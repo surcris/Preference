@@ -652,6 +652,10 @@ p{
 		top: 0;
 		left: 0;
 	}
+	.newCard-modif div{
+		
+		opacity: 1;
+	}
 	.newCard-top{
 		min-height: fit-content;
 		
@@ -663,5 +667,6 @@ p{
 		padding: 0;
 		margin: 0px;
 	}
+	
 }
 </style>

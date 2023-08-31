@@ -1,11 +1,11 @@
 <template>
     
-	<div @click="myStore.etatmodeTodo()" class="btn-todo " >
+	<!-- <div @click="myStore.etatmodeTodo()" class="btn-todo " >
 		<i class="fa-solid fa-clipboard-list"></i>
 	</div>
 	<div @click="myStore.etatactionBdd()" class="btn-calc" >
 		<i class="fa-solid fa-calculator"></i>
-	</div>
+	</div>-->
 	
 		<div class="menu-container-mobile">
 			<div v-if="myStore.etathome == false" @click="myStore.btnAccueil()" class="btn-mobile-todo " >
@@ -17,10 +17,11 @@
 				<i class="fa-solid fa-clipboard-list"></i>
 				<p>ToDo List</p>
 			</div>
+			<!-- 
 			<div @click="myStore.etatactionBdd()" class="btn-mobile-calc" >
 				<i class="fa-solid fa-calculator"></i>
 				<p>Calculatrice</p>
-			</div>
+			</div>-->
 			<div @click="myStore.btnAjoutManga" class="btn-mobile-calc" >
 				<i class="fa-solid fa-circle-plus"></i>
 				<p>Ajout Manga</p>
@@ -104,12 +105,12 @@ export default{
 
 
 .menu-container-mobile{
-	display: none;
+	
 	position: absolute;
 	z-index: 10;
 	top: 55px;
 	height: fit-content;
-	width: 50%;
+	width: 200px;
 	background-color: rgb(223, 223, 223);
 	border-radius: 5px;
 	padding: 2px 0;
@@ -159,7 +160,7 @@ export default{
 	font-size: 25px;
 }
 
-@media (max-width: 450px) {
+/* @media (max-width: 450px) { */
 
 	.menu-container-mobile{
 		display: block;
@@ -174,7 +175,7 @@ export default{
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		margin: 4px;
+		margin: 4px ;
 		transition: all 0.5s;
 	}
 	[class*="btn-mobile"]:hover {
@@ -194,6 +195,6 @@ export default{
 		justify-content: center;
 		align-items: center;
 	}
-}
+/* } */
 
 </style>

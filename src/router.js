@@ -29,6 +29,14 @@ const routes = [
 
     },
     {
+
+        path: "/eclipse",
+        name: "eclipse",
+        component: () => import("./components/eclipseHome.vue"),
+        props: true
+
+    },
+    {
         name: 'NotFound',
         path: '/:pathMatch(.*)',
         component: () => import("./components/NotFound.vue")

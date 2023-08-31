@@ -279,8 +279,8 @@ export default {
                 if (this.manga != null) {
                     setTimeout(() => {
                         this.$refs.titre.value = this.manga.titre;
-                        this.$refs.commentaire.value = "";
-                        this.$refs.imglien.value = "";
+                        // this.$refs.commentaire.value = "";
+                        // this.$refs.imglien.value = "";
                         if (this.manga.status == "En cours") {
                             this.$refs.encours.checked = true;
                         } else if (this.manga.status == "Finis") {
@@ -305,7 +305,7 @@ export default {
                         }
                         
                         for (let index = 0; index < this.tagsComp.length; index++) {
-                            this.$refs['btn-' + index][0].className = "btn-notActive"
+                            this.$refs['p-' + index][0].className = "p-notActive"
 
                         }
                         if (this.manga.tags) {
@@ -313,8 +313,8 @@ export default {
 
                                 for (let j = 0; j < this.tagsComp.length; j++) {
 
-                                    if (this.manga.tags[i] === this.$refs['btn-' + j][0].textContent) {
-                                        this.$refs['btn-' + j][0].className = "btn-active";
+                                    if (this.manga.tags[i] === this.$refs['p-' + j][0].textContent) {
+                                        this.$refs['p-' + j][0].className = "p-active";
                                         this.tagsComp[j].active = true;
 
                                     }
@@ -323,9 +323,7 @@ export default {
 
                             }
                         }
-                        // console.log(this.tagsComp)
                         
-                        // console.log(this.manga)
                     }, 10);
                 }
                 
@@ -338,57 +336,7 @@ export default {
 </script>
 
 <template>
-	<div class="container-modalFav">
-		<div class="modalFav">
-            <div @click="closeModal()" class="cross">X</div>
-            <div class="modalFav-contenu">
-                <label for="">Titre</label>
-                <input class="titre" ref="titre" type="text" placeholder="Titre">
-                <fieldset>
-                    <legend >Status</legend>
-                    <div class="content-checkbox">
-                        <div >
-                            <input ref="finis" type="checkbox" id="scales" name="scales" value="Finis">
-                            <label for="scales">Finis</label>
-                        </div>
-                        <div>
-                            <input ref="encours" type="checkbox" id="En cours" name="En cours" value="En cours">
-                            <label for="En cours">En cours</label>
-                        </div>
-                    </div>
-                </fieldset>
-                <div class="div-buttonAdd">
-                    <div>
-                        <label for="">Lien :</label>
-                        <i class="fa-solid fa-circle-plus" @click="addLien()"></i>
-                        <i class="fa-solid fa-circle-minus" @click="suppLien()"></i>
-                        <!--
-                            <button class="addLien" @click="addLien()">+</button>
-                        <button class="suppLien" @click="suppLien()">-</button>
-                        -->
-                        
-                    </div>
-                </div>
-                <div v-for="(count,index) in lienCount" :key="index">
-                    <input :class="'lien'+index" :ref="'lien'+index" type="text" v-model="count.lien" 
-                    >
-                </div>
-                <div>
-                    <label for="">Tags :</label>
-                    <div class="container-tags">
-                        <button v-for="(tag,index) in tagsCates" class="p-basic" :ref="'btn-'+index" @click="isTagSelected(index)" > 
-                        {{ tag }}
-                        </button>
-                    </div>
-                </div>
-               
-            </div>
-            <div class="validation">
-                <button class="btn-valide" @click="manga == null ?  sendFav() : modifFav() ">Valider</button>
-                <p>{{messageForm}}</p>
-            </div>
-        </div>
-	</div>
+	
     <div class="container-mobile-modalFav">
         <div @click="myStore.btnAccueil()" class="cross">X</div>
         <h3>Ajouter un Manga</h3>
@@ -444,32 +392,7 @@ export default {
 </template>
 
 <style scoped lang="css">
-.container-modalFav{
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    overflow: auto;
-    
-    background-color: rgb(0, 0, 0,0.4);
-    display: flex;
-    
-    justify-content: center;
-    align-items: center;
-}
-.modalFav{
-    height: fit-content;
-    width: 35%;
-    min-width: 400px;
-    background-color: aliceblue;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    
-}
+
 .container-modalFav .titre{
     
     height: 35px;
@@ -479,15 +402,7 @@ export default {
     border-radius: 5px;
 
 }
-.modalFav-contenu{
-    display: flex;
-    flex-direction: column;
-    padding: 10px 20px ;
-}
-.modalFav-contenu label , legend{
-    font-weight: 1000;
-    font-size: 22px;
-}
+
 .content-checkbox{
         
     display: flex;
@@ -503,10 +418,7 @@ export default {
     font-size: 18px;
     margin-left: 2px;
 }
-.modalFav-contenu div label{
-    font-weight: 1000;
-    font-size: 22px;
-}
+
 .cross{
     display: flex;
     justify-content: end;
@@ -521,13 +433,7 @@ export default {
     border-radius: 5px;
     font-size: 20px;
 }
-.modalFav-contenu input[type="file"]{
-    height: 35px;
-    
-    font-weight: 500;
-    font-size: 20px;
-    margin-top: 2px;
-}
+
 .div-buttonAdd{
     display: flex;
     flex-direction: column;
@@ -547,28 +453,7 @@ export default {
     font-size: 20px;
     margin-left: 5px;
 }
-/* .div-buttonAdd button{
-    
-    margin-left: 10px;
-    font-family: 'Kodchasan';
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    border-radius: 5px;
-    display: flex;
-    padding: 0 3px 3px 3px;
 
-
-}
-.div-buttonAdd .addLien{
-    background-color: rgb(0, 255, 34);
-    border: solid black 2px;
-
-}
-.div-buttonAdd .suppLien{
-    background-color: rgb(255, 0, 0);
-    border: solid rgb(37, 37, 121) 1px;
-} */
 [class*="lien"]{
     margin-bottom: 2px;
     height: 30px;
@@ -611,14 +496,7 @@ export default {
     color: rgb(37, 37, 121);
     
 }
-.btn-active{
-    border: 1px solid red;
-    color: red;
-}
-.btn-notActive{
-    border: 1px solid rgb(37, 37, 121);
-    color: rgb(37, 37, 121);
-}
+
 textarea{
     resize: none;
     font-size: 20px;
@@ -650,148 +528,148 @@ textarea{
     display: none;
     
 }
-@media (max-width: 450px) {
-    .container-modalFav{
-        display: none;
-    }
-    .container-mobile-modalFav{
-        display: block;
-        position: absolute;
-        z-index: 0;
-        top: 55px;
-        height: fit-content;
-        width: 90vw;
-        margin: 0 5vw;
-        background-color: rgb(255, 255, 255);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        border-radius: 5px;
-        
-    }
-    .content-mobile-modalFav{
-        padding-top: 10px;
-        width: 95%;
-        display: flex;
-        flex-direction: column;
-        align-self: center;
-    }
-    h3{
-        margin-left: 5px;
-        font-size: 25px;
-    }
-    .content-mobile-modalFav .titre{
-        
-        height: 35px;
-        font-size: 20px;
-        font-weight: 500;
-        border: 1px solid rgb(37, 37, 121);;
-        border-radius: 5px;
+/* //////////////////////////////////////// */
 
-    }
-    .content-mobile-modalFav .titre:focus{
-        outline: none;
-        
-    }
-    label{
-        font-weight: 600;
-    }
-    .content-checkbox{
-        
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
 
-    }
-    .content-checkbox div{
-        margin: 5px ;
-        
-    }
-    .content-checkbox label{
-        font-size: 18px;
-        margin-left: 2px;
-    }
-    .div-buttonAdd{
-        display: flex;
-        flex-direction: column;
-    }
-    .div-buttonAdd div:nth-child(1){
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding-bottom: 5px;
-
-    }
-    label{
-        font-size: 20px; 
-    }
-    .container-fieldset{
-        padding: 10px 0;
-    }
-    
-    .div-buttonAdd div:nth-child(1) i{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: rgb(37, 37, 121);
-        font-size: 20px;
-        margin-left: 5px;
-    }
-    [class*="lien"]{
-        border: 1px solid rgb(37, 37, 121);
-        height: 35px;
-    }
-    .container-tags{
-        color: rgb(37, 37, 121);
-    }
-    .container-tags .p-basic{
-        margin:  2px;
-        padding: 0 5px;
-        border-radius: 15px;
-        cursor: pointer;
-        font-weight: 600;
-        border: 1px solid rgb(37, 37, 121);
-        color: rgb(37, 37, 121);
-        
-    }
-    /* .container-tags p:active{
-        border-color: red;
-        color: red;
-    } */
-    .p-active{
-        margin:  2px;
-        padding: 0 5px;
-        border-radius: 15px;
-        cursor: pointer;
-        font-weight: 600;
-        border: 1px solid red;
-        color: red;
-    }
-    .p-notActive{
-        margin:  2px;
-        padding: 0 5px;
-        border-radius: 15px;
-        cursor: pointer;
-        font-weight: 600;
-        border: 1px solid rgb(37, 37, 121);
-        color: rgb(37, 37, 121);
-    }
-    .validation{
-        margin: 20px 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .btn-valide{
-        margin: 0;
-        width: 70%;
-        font-size: 18px;
-        font-weight: 700;
-        background-color: rgb(255, 255, 255);
-        border: solid rgb(37, 37, 121) 1px;
-        border-radius: 15px;
-        text-align: center;
-    }
+   
+.container-mobile-modalFav{
+    display: block;
+    position: fixed;
+    z-index: 0;
+    top: 55px;
+    height: fit-content;
+    width: 90vw;
+    margin: 0 5vw;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-radius: 5px;
     
 }
+.content-mobile-modalFav{
+    padding-top: 10px;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+h3{
+    margin-left: 5px;
+    font-size: 25px;
+}
+.content-mobile-modalFav .titre{
+    
+    height: 35px;
+    font-size: 20px;
+    font-weight: 500;
+    border: 1px solid rgb(37, 37, 121);;
+    border-radius: 5px;
+
+}
+.content-mobile-modalFav .titre:focus{
+    outline: none;
+    
+}
+label{
+    font-weight: 600;
+}
+.content-checkbox{
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+}
+.content-checkbox div{
+    margin: 5px ;
+    
+}
+.content-checkbox label{
+    font-size: 18px;
+    margin-left: 2px;
+}
+.div-buttonAdd{
+    display: flex;
+    flex-direction: column;
+}
+.div-buttonAdd div:nth-child(1){
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 5px;
+
+}
+label{
+    font-size: 20px; 
+}
+.container-fieldset{
+    padding: 10px 0;
+}
+
+.div-buttonAdd div:nth-child(1) i{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(37, 37, 121);
+    font-size: 20px;
+    margin-left: 5px;
+}
+[class*="lien"]{
+    border: 1px solid rgb(37, 37, 121);
+    height: 35px;
+}
+.container-tags{
+    color: rgb(37, 37, 121);
+}
+.container-tags .p-basic{
+    margin:  2px;
+    padding: 0 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border: 1px solid rgb(37, 37, 121);
+    color: rgb(37, 37, 121);
+    
+}
+/* .container-tags p:active{
+    border-color: red;
+    color: red;
+} */
+.p-active{
+    margin:  2px;
+    padding: 0 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border: 1px solid red;
+    color: red;
+}
+.p-notActive{
+    margin:  2px;
+    padding: 0 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border: 1px solid rgb(37, 37, 121);
+    color: rgb(37, 37, 121);
+}
+.validation{
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.btn-valide{
+    margin: 0;
+    width: 70%;
+    font-size: 18px;
+    font-weight: 700;
+    background-color: rgb(255, 255, 255);
+    border: solid rgb(37, 37, 121) 1px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+
 </style>
