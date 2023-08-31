@@ -329,6 +329,36 @@ export default {
                 
             }
         },
+		"myStore.storeMangaSearch": {
+            immediate: true,
+            handler() {
+				if (this.myStore.storeMangaSearch == null) {
+					this.messageFiltre = "Aucun résultat";
+					for (const key in this.$refs) {
+						// affiche tous les manga 
+						//console.log(this.$refs[key])
+						this.$refs[key][0].style.display = "flex";
+					}
+				} else {
+					this.messageFiltre = this.myStore.storeMangaSearch.length + " résultat"
+					for (const key in this.$refs) {
+						for (let index = 0; index < this.myStore.storeMangaSearch.length; index++) {
+							if (key.includes(this.myStore.storeMangaSearch[index].titre)) {
+								// affiche les manga qui correspondant au titre
+								this.$refs[key][0].style.display = "flex";
+								// Sort de la boucle actuellement utilisé
+								break;
+							} else {
+								// masque les manga qui ne correspondant pas au titre	
+								this.$refs[key][0].style.display = "none";
+							}
+						}
+					}
+				}
+                
+                
+            }
+        },
 
 		tagsComp: {
             deep: true,

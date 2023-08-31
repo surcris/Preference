@@ -82,16 +82,24 @@ export default {
         searchResults() {
             // Effectuer la logique de recherche et retourner les résultats pertinents
             if (this.myStore.storeManga && this.valInput != "") {
+
+                let arrayFull;
                 const MAX_RESULTS = 5;
                 const myArray = Object.values(this.myStore.storeManga);
-                //console.log(myArray)
+                // console.log(myArray)
                 this.filteredResults = myArray
                     .filter(manga => manga.titre.toLowerCase().includes(this.valInput))
-                    .slice(0, MAX_RESULTS)
+                    .slice(0, MAX_RESULTS);
 
+                arrayFull = myArray.filter(manga => manga.titre.toLowerCase().includes(this.valInput));
+                this.myStore.storeMangaSearch = arrayFull;
+                console.log(arrayFull)
                 console.log(this.filteredResults)
                 return this.filteredResults;
+            }else{
+                this.myStore.storeMangaSearch = "";
             }
+
 
 
         }
