@@ -390,19 +390,25 @@ export default {
 .header-tag{
 	color: white;
 	width: 100%;
-	display: none;
+	display: flex;
 	align-items: center;
-	justify-content: center;
+	
+	justify-content: flex-start;
+	padding: 5px;
+	
 }
 .header-tag-content{
 	width: 90%;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-start;
 }
 .header-tag-content p{
-	font-weight: 300;
-	font-size: 18px;
+	font-weight: 500;
+	font-size: 25px;
+}
+.header-tag-content i{
+	padding: 0 4px;
 }
 .chevron-enter-from{
     transform: rotate(0);
@@ -600,7 +606,7 @@ p{
 		justify-items: center;
 	}
 	.header-tag{
-		display: flex;
+		
 		margin: 5px 0;
 	}
 	.tags-home{
