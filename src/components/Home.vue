@@ -332,12 +332,13 @@ export default {
 		"myStore.storeMangaSearch": {
             immediate: true,
             handler() {
-				if (this.myStore.storeMangaSearch == null) {
+				if (this.myStore.storeMangaSearch.length == 0) {
 					this.messageFiltre = "Aucun résultat";
 					for (const key in this.$refs) {
-						// affiche tous les manga 
-						//console.log(this.$refs[key])
-						this.$refs[key][0].style.display = "flex";
+						if (key.startsWith("manga") ) {
+							this.$refs[key][0].style.display = "flex";
+							
+						}
 					}
 				} else {
 
